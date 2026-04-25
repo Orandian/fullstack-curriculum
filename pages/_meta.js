@@ -1,0 +1,16 @@
+export default {
+  "index": "\ud83c\udfe0 Home",
+  "overview": "\ud83d\udccb Program Overview",
+  "month-01-html-css": "\ud83d\udfe2 Month 1 \u2014 HTML + CSS",
+  "month-02-css-js": "\ud83d\udfe2 Month 2 \u2014 CSS + JS Intro",
+  "month-03-js-core": "\ud83d\udfe1 Month 3 \u2014 JavaScript Core",
+  "month-04-async-js": "\ud83d\udfe1 Month 4 \u2014 Async JavaScript",
+  "month-05-react-basics": "\ud83d\udd35 Month 5 \u2014 React Basics",
+  "month-06-react-intermediate": "\ud83d\udd35 Month 6 \u2014 React Intermediate",
+  "month-07-typescript-react": "\ud83d\udfe3 Month 7 \u2014 TypeScript + React",
+  "month-08-api-integration": "\ud83d\udfe3 Month 8 \u2014 API Integration",
+  "month-09-nodejs": "\ud83d\udd34 Month 9 \u2014 Node.js Basics",
+  "month-10-backend-db": "\ud83d\udd34 Month 10 \u2014 Backend + Database",
+  "month-11-fullstack": "\ud83d\udfe0 Month 11 \u2014 Fullstack Project",
+  "month-12-deployment": "\u26ab Month 12 \u2014 Deployment + Job Prep",
+}
