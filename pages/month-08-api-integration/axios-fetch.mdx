@@ -1,0 +1,141 @@
+---
+title: Lesson 1 — Axios & Fetch in React
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 1 — Axios & Fetch in React
+
+## Why Axios over Fetch?
+
+| Feature | Fetch | Axios |
+|---|---|---|
+| Auto JSON parse | ❌ Manual | ✅ Auto |
+| Request interceptors | ❌ No | ✅ Yes |
+| Response interceptors | ❌ No | ✅ Yes |
+| Base URL config | ❌ No | ✅ Yes |
+| Timeout support | ❌ Manual | ✅ Built-in |
+| Error for 4xx/5xx | ❌ No (only network errors) | ✅ Yes |
+
+## Setting Up an Axios Instance
+
+```ts filename="src/lib/api.ts"
+import axios from 'axios';
+
+// Create a configured instance
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000/api',
+  timeout: 10000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor — attach token to every request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor — handle 401 globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+```
+
+## API Service Functions
+
+```ts filename="src/services/userService.ts"
+import api from '../lib/api';
+import type { User } from '../types';
+
+export const userService = {
+  getAll: async (): Promise<User[]> => {
+    const { data } = await api.get('/users');
+    return data;
+  },
+
+  getById: async (id: number): Promise<User> => {
+    const { data } = await api.get(`/users/${id}`);
+    return data;
+  },
+
+  create: async (payload: Omit<User, 'id'>): Promise<User> => {
+    const { data } = await api.post('/users', payload);
+    return data;
+  },
+
+  update: async (id: number, payload: Partial<User>): Promise<User> => {
+    const { data } = await api.put(`/users/${id}`, payload);
+    return data;
+  },
+
+  delete: async (id: number): Promise<void> => {
+    await api.delete(`/users/${id}`);
+  },
+};
+```
+
+## Custom useFetch Hook
+
+```tsx filename="src/hooks/useFetch.ts"
+import { useState, useEffect, useCallback } from 'react';
+
+interface State<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+}
+
+function useFetch<T>(fetcher: () => Promise<T>) {
+  const [state, setState] = useState<State<T>>({
+    data: null, loading: true, error: null,
+  });
+
+  const load = useCallback(async () => {
+    setState(s => ({ ...s, loading: true, error: null }));
+    try {
+      const data = await fetcher();
+      setState({ data, loading: false, error: null });
+    } catch (err: any) {
+      setState({ data: null, loading: false, error: err.message });
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  return { ...state, refetch: load };
+}
+
+// Usage
+function UserList() {
+  const { data: users, loading, error, refetch } = useFetch(userService.getAll);
+
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage message={error} onRetry={refetch} />;
+  return <ul>{users?.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+```
+
+## Assignment
+
+**Small task:** Create an Axios instance with a base URL and add a request interceptor.
+
+**Main task:** Build a users CRUD page using `userService` — list, view detail, delete.
+
+**Bonus:** Add response caching so repeat requests within 30 seconds return cached data.

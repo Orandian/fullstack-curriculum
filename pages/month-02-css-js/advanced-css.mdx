@@ -1,0 +1,151 @@
+---
+title: Lesson 1 — Advanced CSS (Grid)
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 1 — Advanced CSS (Grid)
+
+## CSS Grid vs Flexbox
+
+| | Flexbox | Grid |
+|---|---|---|
+| Direction | One axis (row OR column) | Two axes (row AND column) |
+| Best for | Navbars, card rows, centering | Full-page layouts, complex grids |
+| Think of it as | 1D layout | 2D layout |
+
+<Callout type="info">
+  Use **Flexbox** for components. Use **Grid** for page-level layouts.
+</Callout>
+
+## Grid Basics
+
+```css filename="style.css"
+.grid-container {
+  display: grid;
+
+  /* Define columns */
+  grid-template-columns: 200px 1fr 200px;
+  /* 3 columns: fixed | flexible | fixed */
+
+  /* Define rows */
+  grid-template-rows: auto 1fr auto;
+  /* 3 rows: shrink-wrap | flexible | shrink-wrap */
+
+  /* Gap between cells */
+  gap: 24px;
+  gap: 16px 24px; /* row-gap  column-gap */
+}
+```
+
+## The `fr` Unit
+
+`fr` means "fraction of available space":
+
+```css
+/* Three equal columns */
+grid-template-columns: 1fr 1fr 1fr;
+grid-template-columns: repeat(3, 1fr); /* same thing */
+
+/* Sidebar + main content */
+grid-template-columns: 240px 1fr;
+
+/* Two sidebars + main */
+grid-template-columns: 200px 1fr 200px;
+```
+
+## Placing Items
+
+```css filename="style.css"
+/* Span across columns */
+.full-width {
+  grid-column: 1 / -1;   /* from first to last column */
+}
+
+.span-two {
+  grid-column: span 2;    /* take 2 column slots */
+}
+
+/* Named template areas */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "header  header"
+    "sidebar content"
+    "footer  footer";
+  min-height: 100vh;
+}
+
+header  { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.content { grid-area: content; }
+footer  { grid-area: footer; }
+```
+
+## Responsive Grid
+
+```css filename="style.css"
+/* Auto-fill columns that are at least 280px wide */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+```
+
+This creates as many columns as fit, automatically — no media queries needed!
+
+## Full Page Layout Example
+
+```html filename="index.html"
+<div class="page-layout">
+  <header class="site-header">Header</header>
+  <nav class="site-nav">Navigation</nav>
+  <main class="site-main">Main Content</main>
+  <aside class="site-aside">Sidebar</aside>
+  <footer class="site-footer">Footer</footer>
+</div>
+```
+
+```css filename="style.css"
+.page-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 200px;
+  grid-template-rows: 64px 1fr 60px;
+  grid-template-areas:
+    "header header  header"
+    "nav    main    aside"
+    "footer footer  footer";
+  min-height: 100vh;
+  gap: 0;
+}
+
+.site-header { grid-area: header; background: #1e40af; color: white; padding: 0 24px; display: flex; align-items: center; }
+.site-nav    { grid-area: nav;    background: #f3f4f6; padding: 24px; }
+.site-main   { grid-area: main;   padding: 32px; }
+.site-aside  { grid-area: aside;  background: #f9fafb; padding: 24px; border-left: 1px solid #e5e7eb; }
+.site-footer { grid-area: footer; background: #111827; color: white; padding: 0 24px; display: flex; align-items: center; }
+
+/* Collapse sidebar on mobile */
+@media (max-width: 768px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main"
+      "nav"
+      "aside"
+      "footer";
+  }
+}
+```
+
+## Assignment
+
+**Small task:** Create a 3-column article grid with `repeat(auto-fill, minmax(280px, 1fr))`.
+
+**Main task:** Rebuild your Profile Page layout using CSS Grid for the overall page structure.
+
+**Bonus:** Use `grid-template-areas` to name your layout zones.

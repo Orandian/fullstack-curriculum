@@ -1,0 +1,60 @@
+---
+title: Lesson 1 — Arrays & Objects
+---
+
+# Lesson 1 — Arrays & Objects
+
+## Arrays — Deep Dive
+
+```js filename="script.js"
+const fruits = ['apple', 'banana', 'cherry'];
+
+// Destructuring
+const [first, second, ...rest] = fruits;
+console.log(first);  // 'apple'
+console.log(rest);   // ['cherry']
+
+// Spread operator
+const moreFruits = [...fruits, 'mango'];
+const copy = [...fruits]; // shallow copy
+
+// Array methods
+fruits.push('date');      // add to end
+fruits.pop();             // remove from end
+fruits.unshift('apricot'); // add to start
+fruits.shift();           // remove from start
+fruits.splice(1, 1);      // remove 1 at index 1
+fruits.indexOf('banana'); // find index
+fruits.includes('apple'); // boolean check
+```
+
+## Objects — Deep Dive
+
+```js filename="script.js"
+const user = { id: 1, name: 'Yan', role: 'admin' };
+
+// Destructuring
+const { id, name, role = 'user' } = user;
+const { name: userName } = user; // rename
+
+// Spread operator
+const updated = { ...user, name: 'YNH' };
+const merged = { ...user, ...{ age: 25 } };
+
+// Computed property names
+const key = 'email';
+const obj = { [key]: 'yan@gmail.com' };
+
+// Object methods
+Object.keys(user);    // ['id', 'name', 'role']
+Object.values(user);  // [1, 'Yan', 'admin']
+Object.entries(user); // [['id', 1], ['name', 'Yan'], ['role', 'admin']]
+```
+
+## Assignment
+
+**Small task:** Destructure an object with 5 properties and rename 2 of them.
+
+**Main task:** Build functions that manipulate arrays of todo objects using spread and destructuring.
+
+**Bonus:** Write a `deepClone(obj)` function without using `JSON.parse/stringify`.

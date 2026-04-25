@@ -1,0 +1,151 @@
+---
+title: Lesson 2 — async/await
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 2 — async/await
+
+## What is async/await?
+
+`async/await` is syntactic sugar over Promises — it lets you write asynchronous code that **reads like synchronous code**.
+
+```js filename="script.js"
+// With Promises (harder to read)
+function getUser(id) {
+  return fetch(`/api/users/${id}`)
+    .then(res => {
+      if (!res.ok) throw new Error('Not found');
+      return res.json();
+    })
+    .then(user => {
+      return fetch(`/api/posts?userId=${user.id}`);
+    })
+    .then(res => res.json())
+    .catch(err => console.error(err));
+}
+
+// With async/await (much cleaner)
+async function getUser(id) {
+  try {
+    const res = await fetch(`/api/users/${id}`);
+    if (!res.ok) throw new Error('User not found');
+
+    const user = await res.json();
+    const postsRes = await fetch(`/api/posts?userId=${user.id}`);
+    const posts = await postsRes.json();
+
+    return { user, posts };
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+```
+
+<Callout type="info">
+  `await` can only be used inside an `async` function. It pauses execution until the Promise resolves.
+</Callout>
+
+## Error Handling Patterns
+
+```js filename="script.js"
+// Pattern 1: try/catch (most common)
+async function fetchData(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fetch failed:', error.message);
+    return null;
+  }
+}
+
+// Pattern 2: Parallel requests (faster than sequential)
+async function fetchMultiple() {
+  try {
+    const [users, posts, comments] = await Promise.all([
+      fetch('/api/users').then(r => r.json()),
+      fetch('/api/posts').then(r => r.json()),
+      fetch('/api/comments').then(r => r.json()),
+    ]);
+    return { users, posts, comments };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Pattern 3: Loading + error states
+async function loadWeather(city) {
+  const loading = document.querySelector('#loading');
+  const errorEl = document.querySelector('#error');
+  const content = document.querySelector('#content');
+
+  loading.hidden = false;
+  errorEl.hidden = true;
+  content.hidden = true;
+
+  try {
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_KEY&units=metric`
+    );
+    if (!res.ok) throw new Error(`City "${city}" not found`);
+    const data = await res.json();
+
+    content.innerHTML = `
+      <h2>${data.name}, ${data.sys.country}</h2>
+      <p class="temp">${Math.round(data.main.temp)}°C</p>
+      <p>${data.weather[0].description}</p>
+    `;
+    content.hidden = false;
+  } catch (error) {
+    errorEl.textContent = error.message;
+    errorEl.hidden = false;
+  } finally {
+    loading.hidden = true;  // always runs
+  }
+}
+```
+
+## Real-World Pattern: API Module
+
+```js filename="api.js"
+// Centralize all your API calls
+const BASE_URL = 'https://jsonplaceholder.typicode.com';
+
+async function request(path, options = {}) {
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+export const api = {
+  getUsers: () => request('/users'),
+  getUser: (id) => request(`/users/${id}`),
+  getPosts: () => request('/posts'),
+  getPost: (id) => request(`/posts/${id}`),
+  createPost: (data) => request('/posts', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  updatePost: (id, data) => request(`/posts/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }),
+  deletePost: (id) => request(`/posts/${id}`, { method: 'DELETE' }),
+};
+```
+
+## Assignment
+
+**Small task:** Write an `async` function that fetches a random joke from `https://official-joke-api.appspot.com/random_joke` and displays it on the page.
+
+**Main task:** Build the [Weather App](/month-04-async-js/projects/weather-app) with loading states and error handling.
+
+**Bonus:** Use `Promise.all` to fetch weather for 3 cities simultaneously and display them side by side.

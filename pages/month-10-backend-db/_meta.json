@@ -1,0 +1,7 @@
+{
+  "index": "Overview",
+  "database": "Lesson 1 — Database (PostgreSQL)",
+  "crud-operations": "Lesson 2 — CRUD with Prisma",
+  "jwt-auth": "Lesson 3 — JWT Authentication",
+  "projects": "Projects"
+}

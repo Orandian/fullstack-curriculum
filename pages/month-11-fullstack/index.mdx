@@ -1,0 +1,53 @@
+---
+
+## title: Month 11 — Fullstack Project
+
+import { Callout, Cards, Card } from 'nextra/components'
+
+# 🟠 Month 11 — Fullstack Project
+
+**Goal:** Combine everything learned — React frontend + Node.js/Express backend + PostgreSQL database — into one real, deployable application.
+
+This is a \*\*team project\*\*. Work in groups of 2–3 people. Assign roles: who does frontend, who does backend, who does DB/API design. Use GitHub branches and pull requests like a real team.
+
+## Stack
+
+```
+Frontend:  React + TypeScript + React Router + Axios
+Backend:   Node.js + Express + Prisma
+Database:  PostgreSQL
+Auth:      JWT
+Deployment: Vercel (frontend) + Render (backend)
+```
+
+## Choose Your Project
+
+## Team Workflow
+
+```bash
+# 1. One person creates the repo
+gh repo create team-project --public
+git clone https://github.com/team/team-project
+
+# 2. Use branches for features
+git checkout -b feature/user-auth
+git checkout -b feature/post-crud
+git checkout -b feature/frontend-auth
+
+# 3. Pull Requests for every feature
+# Never push directly to main!
+gh pr create --title "Add user auth" --body "Closes #1"
+
+# 4. Code review before merge
+```
+
+## Project Requirements (All Options)
+
+- \[ \] User registration + login (JWT)
+- \[ \] Protected routes (frontend + backend)
+- \[ \] At least 3 database models
+- \[ \] Full CRUD for main resource
+- \[ \] Responsive UI (mobile + desktop)
+- \[ \] Deployed and accessible via public URL
+- \[ \] README with setup instructions
+- \[ \] Team GitHub workflow (branches + PRs)

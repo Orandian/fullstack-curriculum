@@ -1,0 +1,160 @@
+---
+title: Lesson 2 — Express.js
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 2 — Express.js
+
+## What is Express?
+
+Express is a minimal web framework for Node.js. It handles HTTP requests and lets you define routes.
+
+## Your First Server
+
+```js filename="src/index.js"
+const express = require('express');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+
+// Middleware
+app.use(cors());                      // allow cross-origin requests
+app.use(express.json());              // parse JSON request bodies
+app.use(express.urlencoded({ extended: true })); // parse form data
+
+// Routes
+app.get('/', (req, res) => {
+  res.json({ message: 'API is running', status: 'ok' });
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
+```
+
+## Request & Response
+
+```js filename="src/routes/posts.js"
+const express = require('express');
+const router = express.Router();
+
+// In-memory "database"
+let posts = [
+  { id: 1, title: 'Hello World', body: 'My first post', userId: 1 },
+  { id: 2, title: 'Learning Node', body: 'Express is great', userId: 1 },
+];
+let nextId = 3;
+
+// GET /posts — list all
+router.get('/', (req, res) => {
+  // Query params: GET /posts?userId=1
+  const { userId } = req.query;
+  const result = userId
+    ? posts.filter(p => p.userId === Number(userId))
+    : posts;
+  res.json(result);
+});
+
+// GET /posts/:id — get one
+router.get('/:id', (req, res) => {
+  const post = posts.find(p => p.id === Number(req.params.id));
+  if (!post) return res.status(404).json({ error: 'Post not found' });
+  res.json(post);
+});
+
+// POST /posts — create
+router.post('/', (req, res) => {
+  const { title, body, userId } = req.body;
+  if (!title || !body) {
+    return res.status(400).json({ error: 'title and body are required' });
+  }
+  const post = { id: nextId++, title, body, userId: userId || 1 };
+  posts.push(post);
+  res.status(201).json(post);
+});
+
+// PUT /posts/:id — update
+router.put('/:id', (req, res) => {
+  const idx = posts.findIndex(p => p.id === Number(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'Not found' });
+  posts[idx] = { ...posts[idx], ...req.body };
+  res.json(posts[idx]);
+});
+
+// PATCH /posts/:id — partial update
+router.patch('/:id', (req, res) => {
+  const post = posts.find(p => p.id === Number(req.params.id));
+  if (!post) return res.status(404).json({ error: 'Not found' });
+  Object.assign(post, req.body);
+  res.json(post);
+});
+
+// DELETE /posts/:id — delete
+router.delete('/:id', (req, res) => {
+  const idx = posts.findIndex(p => p.id === Number(req.params.id));
+  if (idx === -1) return res.status(404).json({ error: 'Not found' });
+  const deleted = posts.splice(idx, 1)[0];
+  res.json({ message: 'Deleted', post: deleted });
+});
+
+module.exports = router;
+```
+
+## Connecting Routes
+
+```js filename="src/index.js"
+const express = require('express');
+const cors = require('cors');
+const postsRouter = require('./routes/posts');
+const usersRouter = require('./routes/users');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Mount routers
+app.use('/api/posts', postsRouter);
+app.use('/api/users', usersRouter);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: `Route ${req.method} ${req.path} not found` });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+app.listen(4000, () => console.log('Server at http://localhost:4000'));
+```
+
+<Callout type="info">
+  Test your API with VS Code's **Thunder Client** extension or **Postman**. Both are free.
+</Callout>
+
+## HTTP Status Codes
+
+| Code | Meaning | When to use |
+|---|---|---|
+| 200 | OK | Successful GET, PUT, PATCH |
+| 201 | Created | Successful POST |
+| 204 | No Content | Successful DELETE |
+| 400 | Bad Request | Invalid input |
+| 401 | Unauthorized | Not logged in |
+| 403 | Forbidden | Not allowed |
+| 404 | Not Found | Resource doesn't exist |
+| 500 | Server Error | Something crashed |
+
+## Assignment
+
+**Small task:** Add a `GET /api/health` endpoint that returns server uptime.
+
+**Main task:** Build the [Simple REST API](/month-09-nodejs/projects/rest-api) with full CRUD for posts.
+
+**Bonus:** Add pagination to the GET /posts endpoint: `?page=1&limit=10`.

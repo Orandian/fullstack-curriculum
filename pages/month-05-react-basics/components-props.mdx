@@ -1,0 +1,185 @@
+---
+title: Lesson 1 — Components & Props
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 1 — Components & Props
+
+## What is a Component?
+
+A component is a **reusable piece of UI** — a function that returns JSX.
+
+```jsx filename="Button.jsx"
+// Simplest possible component
+function Button() {
+  return <button>Click me</button>;
+}
+
+export default Button;
+```
+
+## JSX Rules
+
+```jsx filename="App.jsx"
+function App() {
+  const name = 'Yan Naing';
+  const isLoggedIn = true;
+
+  return (
+    // 1. Return one root element (or use a Fragment <>)
+    <div className="app">
+      {/* 2. Use {} for JavaScript expressions */}
+      <h1>Hello, {name}!</h1>
+
+      {/* 3. className instead of class */}
+      <p className="intro">Welcome back.</p>
+
+      {/* 4. Conditional rendering */}
+      {isLoggedIn && <span>You are logged in</span>}
+      {isLoggedIn ? <span>Logged in</span> : <span>Logged out</span>}
+
+      {/* 5. Self-closing tags */}
+      <img src="photo.jpg" alt="Photo" />
+      <input type="text" />
+    </div>
+  );
+}
+```
+
+## Props — Passing Data to Components
+
+```jsx filename="Card.jsx"
+// Receive props as the first argument
+function Card({ title, description, color = 'blue' }) {
+  return (
+    <div className={`card card--${color}`}>
+      <h3>{title}</h3>
+      <p>{description}</p>
+    </div>
+  );
+}
+```
+
+```jsx filename="App.jsx"
+function App() {
+  return (
+    <div>
+      {/* Pass props like HTML attributes */}
+      <Card
+        title="React Basics"
+        description="Learn components and props"
+        color="blue"
+      />
+      <Card
+        title="JavaScript Core"
+        description="Arrays, objects, async"
+        color="green"
+      />
+    </div>
+  );
+}
+```
+
+## Props — All Types
+
+```jsx filename="ProfileCard.jsx"
+function ProfileCard({
+  name,           // string
+  age,            // number
+  isActive,       // boolean
+  skills,         // array
+  address,        // object
+  onClick,        // function
+  children,       // special: nested JSX
+}) {
+  return (
+    <div className="profile-card" onClick={onClick}>
+      <h2>{name} ({age})</h2>
+      {isActive && <span className="badge">Active</span>}
+      <ul>
+        {skills.map(skill => (
+          <li key={skill}>{skill}</li>
+        ))}
+      </ul>
+      <p>{address.city}, {address.country}</p>
+      {children}
+    </div>
+  );
+}
+```
+
+```jsx filename="App.jsx"
+<ProfileCard
+  name="Yan Naing"
+  age={25}
+  isActive={true}
+  skills={['React', 'Node.js', 'TypeScript']}
+  address={{ city: 'Yangon', country: 'Myanmar' }}
+  onClick={() => console.log('Card clicked')}
+>
+  <button>View Profile</button>
+</ProfileCard>
+```
+
+<Callout type="warning">
+  **Key rule:** Props are **read-only**. A component must never modify its own props. To change data, you need **state** (next lesson).
+</Callout>
+
+## Rendering Lists
+
+```jsx filename="TodoList.jsx"
+function TodoList({ todos }) {
+  return (
+    <ul>
+      {todos.map(todo => (
+        // Always provide a unique key!
+        <li key={todo.id} className={todo.done ? 'done' : ''}>
+          {todo.text}
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+## Component Composition
+
+Break complex UIs into small, focused components:
+
+```jsx filename="App.jsx"
+function Avatar({ src, alt, size = 'md' }) {
+  return <img className={`avatar avatar--${size}`} src={src} alt={alt} />;
+}
+
+function UserInfo({ name, role }) {
+  return (
+    <div>
+      <strong>{name}</strong>
+      <span>{role}</span>
+    </div>
+  );
+}
+
+function UserCard({ user }) {
+  return (
+    <div className="user-card">
+      <Avatar src={user.avatar} alt={user.name} />
+      <UserInfo name={user.name} role={user.role} />
+    </div>
+  );
+}
+
+function App() {
+  const user = { name: 'Yan Naing', role: 'Developer', avatar: '/photo.jpg' };
+  return <UserCard user={user} />;
+}
+```
+
+## Assignment
+
+**Small task:** Create a `Badge` component that accepts `text` and `color` props.
+
+**Main task:** Build a `ProductCard` component used to display 4 different products in a grid.
+
+**Bonus:** Create a `Stats` component that renders an array of `{ label, value }` objects as cards.

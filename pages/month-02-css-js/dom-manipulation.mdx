@@ -1,0 +1,187 @@
+---
+title: Lesson 3 — DOM Manipulation
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 3 — DOM Manipulation
+
+## What is the DOM?
+
+The DOM (Document Object Model) is how JavaScript sees your HTML — as a **tree of objects** you can read and modify.
+
+```
+document
+└── html
+    ├── head
+    │   └── title
+    └── body
+        ├── header
+        │   └── h1
+        └── main
+            ├── p
+            └── button
+```
+
+## Selecting Elements
+
+```js filename="script.js"
+// Select by CSS selector (returns first match)
+const btn = document.querySelector('#submit-btn');
+const title = document.querySelector('h1');
+const card = document.querySelector('.card');
+
+// Select all matching elements (returns NodeList)
+const allCards = document.querySelectorAll('.card');
+const allLinks = document.querySelectorAll('nav a');
+
+// Iterate over NodeList
+allCards.forEach(card => {
+  card.style.border = '2px solid blue';
+});
+```
+
+## Reading & Changing Content
+
+```js filename="script.js"
+const title = document.querySelector('h1');
+
+// Read text content
+console.log(title.textContent);  // plain text
+console.log(title.innerHTML);    // HTML string
+
+// Write text content (safe — no HTML injection)
+title.textContent = 'New Title';
+
+// Write HTML (use carefully)
+title.innerHTML = 'Hello <span style="color:red">World</span>';
+```
+
+## Changing Styles & Classes
+
+```js filename="script.js"
+const btn = document.querySelector('.btn');
+
+// Inline styles
+btn.style.backgroundColor = '#1d4ed8';
+btn.style.color = 'white';
+btn.style.padding = '12px 24px';
+
+// Classes (preferred approach)
+btn.classList.add('active');
+btn.classList.remove('disabled');
+btn.classList.toggle('open');       // add if absent, remove if present
+btn.classList.contains('active');   // true/false
+```
+
+## Changing Attributes
+
+```js filename="script.js"
+const img = document.querySelector('img');
+const link = document.querySelector('a');
+const input = document.querySelector('input');
+
+img.setAttribute('src', 'new-photo.jpg');
+img.setAttribute('alt', 'New description');
+link.setAttribute('href', 'https://github.com');
+
+// Some attributes have direct properties
+input.value = 'Hello';
+link.href = 'https://google.com';
+img.src = 'photo.jpg';
+```
+
+## Events
+
+```js filename="script.js"
+const btn = document.querySelector('#my-btn');
+
+// Listen for a click
+btn.addEventListener('click', function() {
+  console.log('Button clicked!');
+});
+
+// Arrow function version
+btn.addEventListener('click', () => {
+  btn.textContent = 'Clicked!';
+  btn.style.background = 'green';
+});
+
+// The event object
+btn.addEventListener('click', (event) => {
+  console.log(event.target);          // the element clicked
+  console.log(event.target.id);       // its id
+  event.preventDefault();             // stop default behavior (e.g. form submit)
+});
+
+// Common events
+element.addEventListener('click', handler);
+element.addEventListener('mouseover', handler);
+element.addEventListener('keydown', handler);
+element.addEventListener('input', handler);
+element.addEventListener('submit', handler);
+element.addEventListener('change', handler);
+```
+
+## Creating & Removing Elements
+
+```js filename="script.js"
+// Create element
+const newCard = document.createElement('div');
+newCard.classList.add('card');
+newCard.innerHTML = `
+  <h3>New Card</h3>
+  <p>This was created with JavaScript.</p>
+`;
+
+// Add to DOM
+document.querySelector('.card-grid').appendChild(newCard);
+
+// Insert before another element
+const parent = document.querySelector('.list');
+const first = parent.querySelector('li');
+parent.insertBefore(newCard, first);
+
+// Remove element
+const oldCard = document.querySelector('.old-card');
+oldCard.remove();
+```
+
+## Full Example — Dark Mode Toggle
+
+```html filename="index.html"
+<button id="theme-toggle">🌙 Dark Mode</button>
+```
+
+```css filename="style.css"
+body { background: white; color: #1f2937; transition: all 0.3s; }
+body.dark { background: #111827; color: #f9fafb; }
+body.dark .card { background: #1f2937; border-color: #374151; }
+```
+
+```js filename="script.js"
+const toggleBtn = document.querySelector('#theme-toggle');
+const body = document.body;
+
+toggleBtn.addEventListener('click', () => {
+  body.classList.toggle('dark');
+  const isDark = body.classList.contains('dark');
+  toggleBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+});
+
+// Persist preference
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+  body.classList.add('dark');
+  toggleBtn.textContent = '☀️ Light Mode';
+}
+```
+
+## Assignment
+
+**Small task:** Add a dark mode toggle to your Profile Page.
+
+**Main task:** Complete the [Form Validation](/month-02-css-js/projects/form-validation) project using DOM manipulation.
+
+**Bonus:** Build a character counter for a `<textarea>` that changes color when near the limit.

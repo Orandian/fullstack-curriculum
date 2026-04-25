@@ -1,0 +1,232 @@
+---
+title: Lesson 3 — Flexbox
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 3 — Flexbox
+
+## What is Flexbox?
+
+Flexbox is a CSS layout system for arranging items in **one direction** — either a row or a column. It solves the classic centering and spacing problems that used to require hacks.
+
+## Enabling Flexbox
+
+```css
+.container {
+  display: flex;
+}
+```
+
+All direct children become **flex items**.
+
+## Main Axis vs Cross Axis
+
+```
+flex-direction: row (default)
+─────────────────────────── → main axis
+│  item  │  item  │  item  │
+─────────────────────────── ↓ cross axis
+
+flex-direction: column
+↓ main axis
+┌────────┐
+│  item  │
+│  item  │
+│  item  │
+└────────┘ → cross axis
+```
+
+## Core Properties
+
+### On the Container
+
+```css filename="style.css"
+.container {
+  display: flex;
+
+  /* Direction */
+  flex-direction: row;           /* row | row-reverse | column | column-reverse */
+
+  /* Wrap */
+  flex-wrap: wrap;               /* nowrap | wrap | wrap-reverse */
+
+  /* Main axis alignment */
+  justify-content: center;
+  /* flex-start | flex-end | center | space-between | space-around | space-evenly */
+
+  /* Cross axis alignment */
+  align-items: center;
+  /* stretch | flex-start | flex-end | center | baseline */
+
+  /* Gap between items */
+  gap: 16px;
+  gap: 16px 24px;  /* row-gap  column-gap */
+}
+```
+
+### On the Items
+
+```css filename="style.css"
+.item {
+  /* Grow to fill available space */
+  flex-grow: 1;
+
+  /* Shrink if needed */
+  flex-shrink: 0;
+
+  /* Base size */
+  flex-basis: 200px;
+
+  /* Shorthand: grow shrink basis */
+  flex: 1 0 200px;
+  flex: 1;         /* grow=1, shrink=1, basis=0 */
+
+  /* Override container alignment for this item */
+  align-self: flex-end;
+
+  /* Order (default 0) */
+  order: 2;
+}
+```
+
+## Common Patterns
+
+### Perfect Centering
+
+```css
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+```
+
+### Navigation Bar
+
+```css filename="style.css"
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  background: #1e40af;
+}
+
+.nav-logo { font-size: 1.5rem; color: white; font-weight: 700; }
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { color: white; text-decoration: none; }
+```
+
+```html filename="index.html"
+<nav>
+  <span class="nav-logo">MyBrand</span>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+  </div>
+</nav>
+```
+
+### Card Grid
+
+```css filename="style.css"
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.card {
+  flex: 1 1 280px;   /* grow, shrink, min-width */
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+}
+```
+
+### Sidebar + Content Layout
+
+```css filename="style.css"
+.layout {
+  display: flex;
+  gap: 32px;
+  min-height: 100vh;
+}
+
+.sidebar {
+  flex: 0 0 240px;   /* fixed 240px, won't grow or shrink */
+}
+
+.content {
+  flex: 1;           /* take all remaining space */
+}
+```
+
+## Full Example — Profile Card
+
+```html filename="index.html"
+<div class="profile-card">
+  <img src="avatar.jpg" alt="Profile photo" />
+  <div class="profile-info">
+    <h2>Yan Naing Htwe</h2>
+    <p>Fullstack Developer</p>
+    <div class="skills">
+      <span class="badge">React</span>
+      <span class="badge">Node.js</span>
+      <span class="badge">TypeScript</span>
+    </div>
+  </div>
+</div>
+```
+
+```css filename="style.css"
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+.profile-card img {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-info h2 { font-size: 1.25rem; margin-bottom: 4px; }
+.profile-info p { color: #6b7280; margin-bottom: 12px; }
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+```
+
+## Assignment
+
+**Small task:** Use flexbox to center a `<div>` perfectly in the middle of the screen.
+
+**Main task:** Add a flexbox nav and a flex card layout to your Profile Page.
+
+**Bonus:** Build a responsive flex layout that switches from `row` to `column` below 600px.

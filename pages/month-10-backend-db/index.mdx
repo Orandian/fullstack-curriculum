@@ -1,0 +1,59 @@
+---
+title: Month 10 — Backend + Database
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# 🔴 Month 10 — Backend + Database
+
+**Goal:** Add a real database and JWT authentication to your Node.js API.
+
+<Callout type="info">
+  This month connects everything. By the end you'll have a production-ready API with real auth — the same pattern used by most professional apps.
+</Callout>
+
+## Topics
+
+| Lesson | Topic |
+|---|---|
+| 1 | Database — PostgreSQL + Prisma ORM |
+| 2 | CRUD Operations — real DB queries |
+| 3 | JWT Authentication — login, register, protected routes |
+
+## Projects
+
+- **Auth System** — register, login, refresh token, logout
+- **CRUD API** — posts/tasks with a real PostgreSQL database
+
+## Stack
+
+```
+PostgreSQL  (database)
+Prisma      (ORM — query builder + migrations)
+bcrypt      (password hashing)
+jsonwebtoken (JWT signing/verification)
+```
+
+## Install
+
+```bash
+npm install @prisma/client bcrypt jsonwebtoken
+npm install -D prisma
+npx prisma init
+```
+
+## Weekly Schedule
+
+<Steps>
+  ### Week 1
+  PostgreSQL setup, Prisma schema, migrations
+
+  ### Week 2
+  CRUD with real database — replace in-memory store
+
+  ### Week 3
+  bcrypt + JWT — register, login, verify token middleware
+
+  ### Week 4
+  Build Auth System + protected CRUD API
+</Steps>

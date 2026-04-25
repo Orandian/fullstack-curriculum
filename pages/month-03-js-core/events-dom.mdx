@@ -1,0 +1,57 @@
+---
+title: Lesson 3 — Events & DOM Advanced
+---
+
+# Lesson 3 — Events & DOM Advanced
+
+## Event Delegation
+
+Instead of attaching one listener per element, attach **one listener to the parent** and check which child was clicked.
+
+```js filename="script.js"
+// ❌ Inefficient — one listener per item
+document.querySelectorAll('.todo-item').forEach(item => {
+  item.addEventListener('click', handler);
+});
+
+// ✅ Efficient — one listener on parent
+document.querySelector('#todo-list').addEventListener('click', (e) => {
+  const item = e.target.closest('.todo-item');
+  if (!item) return;
+  const id = Number(item.dataset.id);
+
+  if (e.target.classList.contains('delete-btn')) deleteTodo(id);
+  if (e.target.classList.contains('toggle-btn')) toggleTodo(id);
+});
+```
+
+## Dynamic Rendering Pattern
+
+```js filename="script.js"
+// State → render (the React pattern, without React)
+let state = { todos: [], filter: 'all' };
+
+function setState(patch) {
+  state = { ...state, ...patch };
+  render();
+}
+
+function render() {
+  const filtered = getFiltered(state.todos, state.filter);
+  document.querySelector('#list').innerHTML =
+    filtered.map(renderTodo).join('');
+}
+
+function renderTodo(todo) {
+  return \`
+    <li class="todo \${todo.done ? 'done' : ''}" data-id="\${todo.id}">
+      <span>\${todo.text}</span>
+      <button class="delete-btn">✕</button>
+    </li>
+  \`;
+}
+```
+
+## Assignment
+
+**Main task:** Refactor the Month 2 Todo App to use event delegation and a state→render pattern.

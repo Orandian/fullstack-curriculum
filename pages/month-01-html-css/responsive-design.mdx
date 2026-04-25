@@ -1,0 +1,175 @@
+---
+title: Lesson 4 — Responsive Design
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 4 — Responsive Design
+
+## What is Responsive Design?
+
+Responsive design means your webpage **looks good on any screen size** — from a phone (320px) to a large desktop (1920px+).
+
+## Mobile-First Approach
+
+Write CSS for mobile first, then add styles for larger screens using `min-width` media queries.
+
+```css filename="style.css"
+/* Mobile styles (default — no query needed) */
+.hero h1 {
+  font-size: 1.75rem;
+}
+
+/* Tablet: 768px and up */
+@media (min-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+  .hero h1 {
+    font-size: 3.5rem;
+  }
+}
+```
+
+<Callout type="info">
+  Mobile-first = less code to override. Start small, add complexity upward.
+</Callout>
+
+## Common Breakpoints
+
+```css filename="style.css"
+/* Mobile: 0–767px (default styles, no query) */
+/* Tablet: 768px+ */
+@media (min-width: 768px) { }
+
+/* Small desktop: 1024px+ */
+@media (min-width: 1024px) { }
+
+/* Large desktop: 1280px+ */
+@media (min-width: 1280px) { }
+```
+
+## Responsive Units
+
+```css filename="style.css"
+/* Relative units */
+font-size: 1rem;       /* relative to root font size (16px) */
+font-size: 1.5em;      /* relative to parent element */
+width: 100%;           /* relative to parent */
+width: 50vw;           /* 50% of viewport width */
+height: 100vh;         /* 100% of viewport height */
+padding: 5%;           /* relative to parent width */
+
+/* Clamp — fluid sizing between min and max */
+font-size: clamp(1rem, 2.5vw, 1.5rem);
+/* min=1rem, preferred=2.5vw, max=1.5rem */
+```
+
+## Responsive Layout Example
+
+```html filename="index.html"
+<div class="container">
+  <nav class="navbar">
+    <span class="logo">Brand</span>
+    <button class="menu-toggle" aria-label="Menu">☰</button>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Work</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main class="layout">
+    <section class="content">
+      <h1>Hi, I'm Yan Naing</h1>
+      <p>I build web applications with React and Node.js.</p>
+    </section>
+    <aside class="sidebar">
+      <h2>Skills</h2>
+      <ul>
+        <li>HTML & CSS</li>
+        <li>JavaScript</li>
+        <li>React</li>
+      </ul>
+    </aside>
+  </main>
+</div>
+```
+
+```css filename="style.css"
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body { font-family: system-ui, sans-serif; }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+
+/* --- NAV --- */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nav-links {
+  display: none;           /* Hidden on mobile */
+  list-style: none;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .menu-toggle { display: none; }
+}
+
+/* --- LAYOUT --- */
+.layout {
+  display: flex;
+  flex-direction: column;  /* Stack on mobile */
+  gap: 32px;
+  padding: 40px 0;
+}
+
+@media (min-width: 768px) {
+  .layout {
+    flex-direction: row;   /* Side by side on tablet+ */
+  }
+
+  .content { flex: 2; }
+  .sidebar { flex: 1; }
+}
+```
+
+## Responsive Images
+
+```css filename="style.css"
+/* Always make images responsive */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Object-fit for controlled cropping */
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+```
+
+## Assignment
+
+**Small task:** Add media queries to your Profile Page so it stacks vertically on mobile.
+
+**Main task:** Complete your [Personal Profile Page](/month-01-html-css/projects/profile-page) — fully responsive.
+
+**Bonus:** Use `clamp()` for fluid typography that scales smoothly across screen sizes.

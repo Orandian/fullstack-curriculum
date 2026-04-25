@@ -1,0 +1,313 @@
+---
+title: Project 2 — Form Validation
+---
+
+import { Callout } from 'nextra/components'
+
+# Project 2 — Form Validation
+
+**Goal:** Build a registration form with full client-side JavaScript validation — no libraries.
+
+## Requirements
+
+- [ ] Fields: Name, Email, Password, Confirm Password
+- [ ] Validate on submit AND on blur (when user leaves a field)
+- [ ] Show error messages below each field
+- [ ] Disable submit while fields are invalid
+- [ ] Show success state after valid submission
+
+## Full Source Code
+
+### index.html
+
+```html filename="index.html"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <div class="form-card">
+      <h1>Create Account</h1>
+      <p class="form-subtitle">Join the Fullstack Developer Program</p>
+
+      <form id="register-form" novalidate>
+
+        <div class="field" id="field-name">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="Yan Naing Htwe" />
+          <span class="error-msg" aria-live="polite"></span>
+        </div>
+
+        <div class="field" id="field-email">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" />
+          <span class="error-msg" aria-live="polite"></span>
+        </div>
+
+        <div class="field" id="field-password">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Min. 8 characters" />
+          <span class="error-msg" aria-live="polite"></span>
+          <div class="password-strength">
+            <div class="strength-bar" id="strength-bar"></div>
+          </div>
+          <span class="strength-label" id="strength-label"></span>
+        </div>
+
+        <div class="field" id="field-confirm">
+          <label for="confirm">Confirm Password</label>
+          <input type="password" id="confirm" name="confirm" placeholder="Repeat your password" />
+          <span class="error-msg" aria-live="polite"></span>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submit-btn">Create Account</button>
+      </form>
+
+      <div class="success-msg" id="success-msg" hidden>
+        <span class="success-icon">✅</span>
+        <h2>Account Created!</h2>
+        <p>Welcome to the program, <strong id="welcome-name"></strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+```
+
+### style.css
+
+```css filename="style.css"
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, sans-serif;
+  background: #f3f4f6;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.form-card {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+h1 { font-size: 1.5rem; margin-bottom: 4px; }
+.form-subtitle { color: #6b7280; margin-bottom: 28px; font-size: 0.9rem; }
+
+/* FIELDS */
+.field { margin-bottom: 20px; }
+label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; color: #374151; }
+
+input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+input:focus { border-color: #1d4ed8; }
+
+/* Validation states */
+.field.valid input   { border-color: #22c55e; }
+.field.invalid input { border-color: #ef4444; }
+
+.error-msg {
+  display: block;
+  font-size: 0.8rem;
+  color: #ef4444;
+  margin-top: 4px;
+  min-height: 1rem;
+}
+
+/* Password strength */
+.password-strength {
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  margin-top: 8px;
+}
+.strength-bar {
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 0.3s, background-color 0.3s;
+}
+.strength-label { font-size: 0.75rem; color: #6b7280; margin-top: 4px; display: block; }
+
+/* SUBMIT BUTTON */
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.btn-submit:hover { background: #1e40af; }
+.btn-submit:disabled { background: #9ca3af; cursor: not-allowed; }
+
+/* SUCCESS */
+.success-msg {
+  text-align: center;
+  padding: 20px 0;
+}
+.success-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+.success-msg h2 { font-size: 1.25rem; margin-bottom: 8px; }
+.success-msg p { color: #6b7280; }
+```
+
+### script.js
+
+```js filename="script.js"
+// --- ELEMENT REFERENCES ---
+const form      = document.querySelector('#register-form');
+const nameInput = document.querySelector('#name');
+const emailInput= document.querySelector('#email');
+const passInput = document.querySelector('#password');
+const confInput = document.querySelector('#confirm');
+const submitBtn = document.querySelector('#submit-btn');
+const successMsg= document.querySelector('#success-msg');
+const welcomeName = document.querySelector('#welcome-name');
+
+// --- VALIDATION RULES ---
+const validators = {
+  name: (value) => {
+    if (!value.trim()) return 'Name is required';
+    if (value.trim().length < 2) return 'Name must be at least 2 characters';
+    return null;
+  },
+  email: (value) => {
+    if (!value.trim()) return 'Email is required';
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) return 'Enter a valid email address';
+    return null;
+  },
+  password: (value) => {
+    if (!value) return 'Password is required';
+    if (value.length < 8) return 'Password must be at least 8 characters';
+    return null;
+  },
+  confirm: (value) => {
+    if (!value) return 'Please confirm your password';
+    if (value !== passInput.value) return 'Passwords do not match';
+    return null;
+  },
+};
+
+// --- HELPER: Show/clear field error ---
+function setFieldState(fieldId, errorMsg) {
+  const field = document.querySelector(`#field-${fieldId}`);
+  const errorEl = field.querySelector('.error-msg');
+  if (errorMsg) {
+    field.classList.add('invalid');
+    field.classList.remove('valid');
+    errorEl.textContent = errorMsg;
+  } else {
+    field.classList.remove('invalid');
+    field.classList.add('valid');
+    errorEl.textContent = '';
+  }
+}
+
+// --- HELPER: Validate single field ---
+function validateField(name, value) {
+  const error = validators[name](value);
+  setFieldState(name, error);
+  return !error;
+}
+
+// --- PASSWORD STRENGTH ---
+function getPasswordStrength(password) {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+  return score;
+}
+
+passInput.addEventListener('input', () => {
+  const strength = getPasswordStrength(passInput.value);
+  const bar = document.querySelector('#strength-bar');
+  const label = document.querySelector('#strength-label');
+  const levels = [
+    { color: '#ef4444', text: 'Very weak',  width: '25%' },
+    { color: '#f97316', text: 'Weak',       width: '50%' },
+    { color: '#eab308', text: 'Good',       width: '75%' },
+    { color: '#22c55e', text: 'Strong',     width: '100%' },
+  ];
+  if (passInput.value) {
+    const level = levels[strength - 1] || levels[0];
+    bar.style.width = level.width;
+    bar.style.backgroundColor = level.color;
+    label.textContent = level.text;
+  } else {
+    bar.style.width = '0%';
+    label.textContent = '';
+  }
+});
+
+// --- BLUR VALIDATION (validate when user leaves field) ---
+nameInput.addEventListener('blur',  () => validateField('name',    nameInput.value));
+emailInput.addEventListener('blur', () => validateField('email',   emailInput.value));
+passInput.addEventListener('blur',  () => validateField('password', passInput.value));
+confInput.addEventListener('blur',  () => validateField('confirm', confInput.value));
+
+// Re-validate confirm when password changes
+passInput.addEventListener('input', () => {
+  if (confInput.value) validateField('confirm', confInput.value);
+});
+
+// --- FORM SUBMIT ---
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const isNameValid  = validateField('name',    nameInput.value);
+  const isEmailValid = validateField('email',   emailInput.value);
+  const isPassValid  = validateField('password', passInput.value);
+  const isConfValid  = validateField('confirm', confInput.value);
+
+  if (isNameValid && isEmailValid && isPassValid && isConfValid) {
+    // Success!
+    form.hidden = true;
+    successMsg.hidden = false;
+    welcomeName.textContent = nameInput.value.trim().split(' ')[0];
+  }
+});
+```
+
+<Callout type="warning">
+  **Key concept:** We validate **on blur** (when leaving a field) AND **on submit**. This gives the best UX — errors show up right when relevant, not before the user has typed anything.
+</Callout>
+
+## Evaluation Rubric
+
+| Criteria | Points |
+|---|---|
+| All fields validate correctly | 30 |
+| Error messages display properly | 20 |
+| Password strength indicator | 20 |
+| Success state shown after submit | 15 |
+| Code is clean and readable | 15 |
+| **Total** | **100** |

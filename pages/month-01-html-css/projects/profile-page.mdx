@@ -1,0 +1,398 @@
+---
+title: Project 1 — Personal Profile Page
+---
+
+import { Callout, FileTree } from 'nextra/components'
+
+# Project 1 — Personal Profile Page
+
+**Goal:** Build a complete personal profile/portfolio page using HTML and CSS only.
+
+## Requirements
+
+- [ ] Semantic HTML structure (`header`, `main`, `footer`, `section`, `article`)
+- [ ] Your name, photo, short bio
+- [ ] Skills list with styled badges
+- [ ] Work/project section with cards
+- [ ] Contact section with links
+- [ ] Fully responsive (mobile + desktop)
+- [ ] Pushed to GitHub
+
+## File Structure
+
+<FileTree>
+  <FileTree.Folder name="profile-page" defaultOpen>
+    <FileTree.File name="index.html" />
+    <FileTree.File name="style.css" />
+    <FileTree.Folder name="images">
+      <FileTree.File name="avatar.jpg" />
+    </FileTree.Folder>
+  </FileTree.Folder>
+</FileTree>
+
+## Full Source Code
+
+### index.html
+
+```html filename="index.html"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yan Naing Htwe — Developer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- HEADER / HERO -->
+  <header class="hero">
+    <div class="container">
+      <nav class="navbar">
+        <span class="nav-logo">YNH</span>
+        <ul class="nav-links">
+          <li><a href="#about">About</a></li>
+          <li><a href="#skills">Skills</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="hero-content">
+        <img class="avatar" src="images/avatar.jpg" alt="Profile photo of Yan Naing Htwe" />
+        <div class="hero-text">
+          <h1>Hi, I'm <span class="highlight">Yan Naing Htwe</span> 👋</h1>
+          <p class="tagline">Fullstack Developer · React + Node.js</p>
+          <p class="bio">
+            I build fast, accessible web applications. Currently learning
+            through the Fullstack Developer Program, Batch 1.
+          </p>
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">View My Work</a>
+            <a href="#contact" class="btn btn-outline">Contact Me</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- SKILLS -->
+    <section id="skills" class="section">
+      <div class="container">
+        <h2 class="section-title">Skills</h2>
+        <div class="skills-grid">
+          <div class="skill-group">
+            <h3>Frontend</h3>
+            <div class="badge-list">
+              <span class="badge blue">HTML</span>
+              <span class="badge blue">CSS</span>
+              <span class="badge blue">JavaScript</span>
+              <span class="badge blue">React</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Backend</h3>
+            <div class="badge-list">
+              <span class="badge green">Node.js</span>
+              <span class="badge green">Express</span>
+              <span class="badge green">PostgreSQL</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h3>Tools</h3>
+            <div class="badge-list">
+              <span class="badge purple">Git</span>
+              <span class="badge purple">GitHub</span>
+              <span class="badge purple">VS Code</span>
+              <span class="badge purple">Figma</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="section section-alt">
+      <div class="container">
+        <h2 class="section-title">Projects</h2>
+        <div class="projects-grid">
+
+          <article class="project-card">
+            <div class="project-img" style="background:#eff6ff">🌤️</div>
+            <div class="project-info">
+              <h3>Weather App</h3>
+              <p>Real-time weather using the OpenWeather API. Built with vanilla JavaScript and the Fetch API.</p>
+              <div class="badge-list">
+                <span class="badge blue">HTML</span>
+                <span class="badge blue">CSS</span>
+                <span class="badge blue">JavaScript</span>
+              </div>
+              <div class="project-links">
+                <a href="#" class="btn btn-sm">Live Demo</a>
+                <a href="#" class="btn btn-sm btn-outline">GitHub</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <div class="project-img" style="background:#f0fdf4">✅</div>
+            <div class="project-info">
+              <h3>Todo App</h3>
+              <p>CRUD todo application with local storage persistence. Pure HTML, CSS, and JavaScript.</p>
+              <div class="badge-list">
+                <span class="badge blue">HTML</span>
+                <span class="badge blue">CSS</span>
+                <span class="badge blue">JavaScript</span>
+              </div>
+              <div class="project-links">
+                <a href="#" class="btn btn-sm">Live Demo</a>
+                <a href="#" class="btn btn-sm btn-outline">GitHub</a>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h2 class="section-title">Contact</h2>
+        <p class="contact-intro">Feel free to reach out — I'm open to opportunities and collaboration.</p>
+        <div class="contact-links">
+          <a href="mailto:yannainghtwe.777.yy@gmail.com" class="contact-link">
+            📧 yannainghtwe.777.yy@gmail.com
+          </a>
+          <a href="https://github.com/Orandian" class="contact-link" target="_blank" rel="noopener">
+            💻 github.com/Orandian
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Yan Naing Htwe · Built with HTML & CSS</p>
+    </div>
+  </footer>
+
+</body>
+</html>
+```
+
+### style.css
+
+```css filename="style.css"
+/* === RESET & BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1f2937;
+  background: #f9fafb;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* === NAVBAR === */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.nav-logo { font-size: 1.25rem; font-weight: 700; color: white; }
+
+.nav-links {
+  display: none;
+  list-style: none;
+  gap: 24px;
+}
+
+.nav-links a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; }
+.nav-links a:hover { color: white; }
+
+@media (min-width: 640px) {
+  .nav-links { display: flex; }
+}
+
+/* === HERO === */
+.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  color: white;
+  padding-bottom: 60px;
+}
+
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding-top: 48px;
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    flex-direction: row;
+    text-align: left;
+    align-items: flex-start;
+  }
+}
+
+.avatar {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+}
+
+.hero-text h1 { font-size: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 8px; }
+.highlight { color: #93c5fd; }
+.tagline { font-size: 1.1rem; color: rgba(255,255,255,0.75); margin-bottom: 12px; }
+.bio { max-width: 500px; color: rgba(255,255,255,0.85); margin-bottom: 24px; }
+
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+@media (min-width: 768px) { .hero-actions { justify-content: flex-start; } }
+
+/* === BUTTONS === */
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: white; color: #1d4ed8; }
+.btn-outline { background: transparent; border: 2px solid white; color: white; }
+.btn-sm { padding: 6px 14px; font-size: 0.85rem; border-radius: 6px; }
+
+/* === SECTIONS === */
+.section { padding: 64px 0; }
+.section-alt { background: white; }
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+  position: relative;
+  padding-bottom: 12px;
+}
+.section-title::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  width: 48px; height: 4px;
+  background: #1d4ed8;
+  border-radius: 2px;
+}
+
+/* === SKILLS === */
+.skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+.skill-group h3 { font-size: 1rem; margin-bottom: 12px; color: #6b7280; }
+
+.badge-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.badge {
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.badge.blue { background: #eff6ff; color: #1d4ed8; }
+.badge.green { background: #f0fdf4; color: #15803d; }
+.badge.purple { background: #faf5ff; color: #7c3aed; }
+
+/* === PROJECTS === */
+.projects-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.project-card {
+  flex: 1 1 300px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s;
+}
+.project-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+.project-img {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.project-info { padding: 20px; }
+.project-info h3 { font-size: 1.1rem; margin-bottom: 8px; }
+.project-info p { color: #6b7280; font-size: 0.9rem; margin-bottom: 12px; }
+.project-links { display: flex; gap: 8px; margin-top: 16px; }
+
+/* === CONTACT === */
+.contact-intro { color: #6b7280; margin-bottom: 24px; }
+.contact-links { display: flex; flex-direction: column; gap: 12px; }
+.contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.contact-link:hover { text-decoration: underline; }
+
+/* === FOOTER === */
+.footer {
+  background: #1f2937;
+  color: #9ca3af;
+  text-align: center;
+  padding: 24px 0;
+  font-size: 0.875rem;
+}
+```
+
+<Callout type="warning">
+  **Submission checklist:**
+  - Does it look good on a phone screen?
+  - Did you push to GitHub?
+  - Did you replace the placeholder content with your own info?
+</Callout>
+
+## Evaluation Rubric
+
+| Criteria | Points |
+|---|---|
+| Semantic HTML structure | 20 |
+| Clean CSS (no inline styles) | 20 |
+| Responsive (mobile + desktop) | 25 |
+| Content (your real info) | 15 |
+| Pushed to GitHub | 20 |
+| **Total** | **100** |

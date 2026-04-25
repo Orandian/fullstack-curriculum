@@ -1,0 +1,63 @@
+---
+title: Month 7 — TypeScript + React
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# 🟣 Month 7 — TypeScript + React
+
+**Goal:** Add type safety to your React apps with TypeScript.
+
+<Callout type="info">
+  TypeScript catches bugs before they happen. Most companies hiring React devs now require TypeScript. Learn it once, use it forever.
+</Callout>
+
+## Why TypeScript?
+
+```ts
+// JavaScript — no error until runtime
+function greet(user) {
+  return user.name.toUpperCase(); // crashes if user is undefined
+}
+greet(); // 💥 TypeError at runtime
+
+// TypeScript — error at compile time
+function greet(user: { name: string }) {
+  return user.name.toUpperCase();
+}
+greet(); // 🔴 TS error: Expected 1 argument
+```
+
+## Topics
+
+| Lesson | Topic |
+|---|---|
+| 1 | TypeScript Basics — types, interfaces, generics |
+| 2 | Types in React — props, state, events, hooks |
+
+## Projects
+
+- **Refactor React App to TypeScript** — add types to Month 6 app
+- **Typed Components** — build a type-safe component library
+
+## Setup
+
+```bash
+npm create vite@latest my-ts-app -- --template react-ts
+```
+
+## Weekly Schedule
+
+<Steps>
+  ### Week 1
+  TypeScript fundamentals — primitives, arrays, objects, union types, type aliases
+
+  ### Week 2
+  Interfaces, generics, and utility types
+
+  ### Week 3
+  TypeScript in React — typing props, state, events, useRef
+
+  ### Week 4
+  Refactor an existing app + build typed components
+</Steps>

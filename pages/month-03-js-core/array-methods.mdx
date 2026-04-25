@@ -1,0 +1,185 @@
+---
+title: Lesson 2 — map, filter, reduce
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 2 — map, filter, reduce
+
+These three array methods are the backbone of modern JavaScript. Learn them deeply.
+
+<Callout type="info">
+  These methods **don't mutate** the original array — they always return a new one. This is key to writing safe, predictable code.
+</Callout>
+
+## map — Transform Every Item
+
+`map` applies a function to every element and returns a **new array of the same length**.
+
+```js filename="script.js"
+const numbers = [1, 2, 3, 4, 5];
+
+// Double every number
+const doubled = numbers.map(n => n * 2);
+// [2, 4, 6, 8, 10]
+
+// Square every number
+const squared = numbers.map(n => n ** 2);
+// [1, 4, 9, 16, 25]
+
+// Extract a property from objects
+const users = [
+  { id: 1, name: 'Alice', age: 25 },
+  { id: 2, name: 'Bob',   age: 30 },
+  { id: 3, name: 'Carol', age: 22 },
+];
+
+const names = users.map(user => user.name);
+// ['Alice', 'Bob', 'Carol']
+
+const userCards = users.map(user => ({
+  id: user.id,
+  label: `${user.name} (${user.age})`,
+}));
+// [{ id: 1, label: 'Alice (25)' }, ...]
+```
+
+## filter — Keep Items That Pass a Test
+
+`filter` returns a **new array containing only items where the callback returns true**.
+
+```js filename="script.js"
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8];
+
+// Keep only even numbers
+const evens = numbers.filter(n => n % 2 === 0);
+// [2, 4, 6, 8]
+
+// Keep numbers greater than 4
+const big = numbers.filter(n => n > 4);
+// [5, 6, 7, 8]
+
+// Filter objects
+const users = [
+  { name: 'Alice', age: 25, active: true },
+  { name: 'Bob',   age: 17, active: true },
+  { name: 'Carol', age: 30, active: false },
+];
+
+const activeUsers = users.filter(user => user.active);
+const adults = users.filter(user => user.age >= 18);
+const activeAdults = users.filter(user => user.active && user.age >= 18);
+```
+
+## reduce — Combine All Items into One Value
+
+`reduce` processes each element and **accumulates a single result**.
+
+```js filename="script.js"
+const numbers = [1, 2, 3, 4, 5];
+
+// Sum all numbers
+const sum = numbers.reduce((total, n) => total + n, 0);
+// 15
+
+// Product of all numbers
+const product = numbers.reduce((total, n) => total * n, 1);
+// 120
+
+// Find the maximum
+const max = numbers.reduce((max, n) => n > max ? n : max, -Infinity);
+// 5
+
+// Count occurrences
+const words = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple'];
+const counts = words.reduce((acc, word) => {
+  acc[word] = (acc[word] || 0) + 1;
+  return acc;
+}, {});
+// { apple: 3, banana: 2, cherry: 1 }
+
+// Group objects by property
+const people = [
+  { name: 'Alice', dept: 'Engineering' },
+  { name: 'Bob',   dept: 'Design' },
+  { name: 'Carol', dept: 'Engineering' },
+];
+const byDept = people.reduce((acc, person) => {
+  if (!acc[person.dept]) acc[person.dept] = [];
+  acc[person.dept].push(person);
+  return acc;
+}, {});
+// { Engineering: [Alice, Carol], Design: [Bob] }
+```
+
+## Chaining Methods
+
+The real power: **chain** them together.
+
+```js filename="script.js"
+const orders = [
+  { product: 'Laptop', price: 999, category: 'Electronics', inStock: true },
+  { product: 'Shirt',  price: 25,  category: 'Clothing',    inStock: false },
+  { product: 'Phone',  price: 699, category: 'Electronics', inStock: true },
+  { product: 'Pants',  price: 45,  category: 'Clothing',    inStock: true },
+];
+
+// Total value of in-stock electronics
+const electronicTotal = orders
+  .filter(o => o.category === 'Electronics')
+  .filter(o => o.inStock)
+  .map(o => o.price)
+  .reduce((sum, price) => sum + price, 0);
+// 1698
+
+// Names of in-stock items sorted by price
+const inStockNames = orders
+  .filter(o => o.inStock)
+  .sort((a, b) => a.price - b.price)
+  .map(o => o.product);
+// ['Shirt' would be out, so: 'Pants', 'Phone', 'Laptop']
+```
+
+## Other Useful Array Methods
+
+```js filename="script.js"
+const arr = [1, 2, 3, 4, 5];
+
+// find — first element matching condition
+arr.find(n => n > 3);       // 4
+
+// findIndex — index of first match
+arr.findIndex(n => n > 3);  // 3
+
+// some — true if ANY element matches
+arr.some(n => n > 4);       // true
+
+// every — true if ALL elements match
+arr.every(n => n > 0);      // true
+
+// includes — check if value exists
+arr.includes(3);             // true
+
+// flat — flatten nested arrays
+[1, [2, 3], [4, [5]]].flat();      // [1, 2, 3, 4, [5]]
+[1, [2, 3], [4, [5]]].flat(2);     // [1, 2, 3, 4, 5]
+
+// flatMap — map then flatten one level
+[[1, 2], [3, 4]].flatMap(a => a);  // [1, 2, 3, 4]
+```
+
+## Assignment
+
+**Small task:** Given this array, write one chain that returns the names of active users over 18, sorted A-Z:
+```js
+const users = [
+  { name: 'Alice', age: 22, active: true },
+  { name: 'Bob',   age: 16, active: true },
+  { name: 'Carol', age: 28, active: false },
+  { name: 'Dave',  age: 30, active: true },
+];
+```
+
+**Main task:** Use `map`, `filter`, and `reduce` inside your Todo App to display filtered todos and show a count.
+
+**Bonus:** Use `reduce` to build a shopping cart total with discounts applied.

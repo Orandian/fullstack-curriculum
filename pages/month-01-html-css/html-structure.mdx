@@ -1,0 +1,151 @@
+---
+title: Lesson 1 — HTML Structure
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 1 — HTML Structure
+
+## What is HTML?
+
+HTML (HyperText Markup Language) is the skeleton of every webpage. It defines **structure** and **meaning** — not visual appearance.
+
+## Document Structure
+
+Every HTML file starts with the same boilerplate:
+
+```html filename="index.html"
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My First Page</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- visible content goes here -->
+  </body>
+</html>
+```
+
+<Callout type="info">
+  `<!DOCTYPE html>` tells the browser this is HTML5. Always include it.
+</Callout>
+
+## Semantic Tags
+
+Use tags that describe their **meaning**, not just appearance:
+
+```html filename="index.html"
+<header>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <article>
+    <h1>My First Blog Post</h1>
+    <p>This is the introduction paragraph.</p>
+
+    <section>
+      <h2>Section Title</h2>
+      <p>Section content goes here.</p>
+    </section>
+  </article>
+
+  <aside>
+    <h3>Related Links</h3>
+    <ul>
+      <li><a href="#">Link 1</a></li>
+      <li><a href="#">Link 2</a></li>
+    </ul>
+  </aside>
+</main>
+
+<footer>
+  <p>&copy; 2026 My Website</p>
+</footer>
+```
+
+## Common HTML Elements
+
+### Text
+```html
+<h1>Heading 1</h1>     <!-- largest heading -->
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<p>Paragraph text</p>
+<strong>Bold text</strong>
+<em>Italic text</em>
+<span>Inline wrapper</span>
+```
+
+### Lists
+```html
+<!-- Unordered (bullet) list -->
+<ul>
+  <li>Item one</li>
+  <li>Item two</li>
+  <li>Item three</li>
+</ul>
+
+<!-- Ordered (numbered) list -->
+<ol>
+  <li>First step</li>
+  <li>Second step</li>
+  <li>Third step</li>
+</ol>
+```
+
+### Links and Images
+```html
+<a href="https://google.com" target="_blank" rel="noopener">
+  Open Google
+</a>
+
+<img
+  src="profile.jpg"
+  alt="A photo of me smiling"
+  width="300"
+  height="300"
+/>
+```
+
+### Forms
+```html
+<form action="/submit" method="POST">
+  <label for="name">Your Name</label>
+  <input type="text" id="name" name="name" placeholder="Enter your name" required />
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required />
+
+  <label for="message">Message</label>
+  <textarea id="message" name="message" rows="5"></textarea>
+
+  <button type="submit">Send</button>
+</form>
+```
+
+## 🏋️ Practice Exercise
+
+Create `index.html` with:
+- A `<header>` with your name and a nav
+- A `<main>` with an `<article>` containing a heading, paragraph, and a list of your skills
+- A `<footer>` with your email
+
+<Callout type="warning">
+  **Rule:** No `<div>` soup. Use semantic tags wherever they fit.
+</Callout>
+
+## Assignment
+
+**Small task:** Create a page with all 6 heading levels and a paragraph under each.
+
+**Main task:** Start your [Personal Profile Page](/month-01-html-css/projects/profile-page) — complete the HTML structure (no CSS yet).
+
+**Bonus:** Add an HTML `<table>` showing your weekly schedule.

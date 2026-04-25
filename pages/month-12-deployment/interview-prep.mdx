@@ -1,0 +1,134 @@
+---
+
+## title: Lesson 3 — Interview Prep
+
+import { Callout } from 'nextra/components'
+
+# Lesson 3 — Interview Prep
+
+## Top JavaScript Questions
+
+### 1. What is the difference between `var`, `let`, and `const`?
+
+```js
+// var — function-scoped, hoisted, can be re-declared
+var x = 1;
+
+// let — block-scoped, not hoisted, can be reassigned
+let y = 2;
+y = 3; // OK
+
+// const — block-scoped, not hoisted, cannot be reassigned
+const z = 4;
+z = 5; // ❌ Error
+```
+
+### 2. What is a closure?
+
+```js
+function createCounter() {
+  let count = 0;  // private variable
+  return {
+    increment: () => ++count,
+    decrement: () => --count,
+    value: () => count,
+  };
+}
+const counter = createCounter();
+counter.increment(); // 1
+counter.increment(); // 2
+counter.value();     // 2
+// count is not accessible from outside — that's a closure
+```
+
+### 3. What is the event loop?
+
+JavaScript is **single-threaded** but handles async via the event loop:
+
+1. Synchronous code runs first (call stack)
+2. Web APIs handle async (setTimeout, fetch)
+3. Callbacks queue up when ready
+4. Event loop pushes them to call stack when it's empty
+
+### 4. Explain promises vs async/await
+
+```js
+// Promises
+fetch(url)
+  .then(r => r.json())
+  .then(data => console.log(data))
+  .catch(err => console.error(err));
+
+// async/await — same thing, cleaner syntax
+async function load() {
+  try {
+    const r = await fetch(url);
+    const data = await r.json();
+    console.log(data);
+  } catch (err) {
+    console.error(err);
+  }
+}
+```
+
+## Top React Questions
+
+### 1. What is the virtual DOM?
+
+React keeps a lightweight copy of the real DOM in memory. When state changes, React diffs the new virtual DOM against the old one, and only updates the **changed parts** of the real DOM.
+
+### 2. When does a component re-render?
+
+- When its **state** changes
+- When its **props** change
+- When its **parent** re-renders (unless memoized)
+- When **context** it subscribes to changes
+
+### 3. What is the difference between useMemo and useCallback?
+
+```jsx
+// useMemo — memoizes a computed VALUE
+const sortedUsers = useMemo(
+  () => users.sort((a, b) => a.name.localeCompare(b.name)),
+  [users]
+);
+
+// useCallback — memoizes a FUNCTION (stable reference)
+const handleDelete = useCallback(
+  (id) => setItems(items.filter(i => i.id !== id)),
+  [items]
+);
+```
+
+### 4. What is prop drilling and how do you solve it?
+
+Prop drilling = passing props through many levels of components that don't need them. Solutions: **Context API**, or state management (Zustand, Redux).
+
+## Portfolio Checklist
+
+- \[ \] 3 deployed projects (with live URLs)
+- \[ \] Each project has a README with setup instructions
+- \[ \] GitHub shows green contribution graph
+- \[ \] Profile has photo, bio, and location
+- \[ \] LinkedIn is up to date
+
+## Resume Checklist
+
+- \[ \] Name + email + GitHub URL + portfolio URL
+- \[ \] Skills section: React, TypeScript, Node.js, Express, PostgreSQL, Git
+- \[ \] Projects section: project name, stack, 2-3 bullet points, live URL, GitHub URL
+- \[ \] Education section
+- \[ \] No typos
+
+\*\*Tip for Japan jobs:\*\* Include "Available for relocation to Japan" and any Japanese language skills. Many Japanese companies also look for engineers who are enthusiastic about Japan — mention it!
+
+## Interview Process (Typical)
+
+```
+1. Resume screening
+2. Recruiter call (culture/motivation)
+3. Technical screening (basic coding — array/string problems)
+4. Technical interview (system design, code review, live coding)
+5. HR interview (salary, timeline)
+6. Offer!
+```

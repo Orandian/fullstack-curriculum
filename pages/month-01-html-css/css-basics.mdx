@@ -1,0 +1,228 @@
+---
+
+## title: Lesson 2 — CSS Basics
+
+import { Callout } from 'nextra/components'
+
+# Lesson 2 — CSS Basics
+
+## What is CSS?
+
+CSS (Cascading Style Sheets) controls the **appearance** of your HTML. Colors, fonts, spacing, layout — all CSS.
+
+## Connecting CSS to HTML
+
+```html
+<!-- In the <head> -->
+<link rel="stylesheet" href="style.css" />
+```
+
+## Selectors
+
+```css
+/* Element selector */
+p { color: gray; }
+
+/* Class selector */
+.card { background: white; }
+
+/* ID selector */
+#hero { height: 100vh; }
+
+/* Descendant selector */
+nav a { text-decoration: none; }
+
+/* Pseudo-class */
+a:hover { color: blue; }
+
+/* Multiple selectors */
+h1, h2, h3 { font-family: sans-serif; }
+```
+
+## The Box Model
+
+Every element is a rectangular box:
+
+```
+┌─────────────────────────────┐
+│           margin            │
+│  ┌───────────────────────┐  │
+│  │        border         │  │
+│  │  ┌─────────────────┐  │  │
+│  │  │     padding     │  │  │
+│  │  │  ┌───────────┐  │  │  │
+│  │  │  │  content  │  │  │  │
+│  │  │  └───────────┘  │  │  │
+│  │  └─────────────────┘  │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+```
+
+```css
+.card {
+  /* Content size */
+  width: 300px;
+  height: 200px;
+
+  /* Padding — space inside the border */
+  padding: 16px;
+  padding: 8px 16px;        /* top/bottom  left/right */
+  padding: 8px 16px 8px 16px; /* top right bottom left */
+
+  /* Border */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+
+  /* Margin — space outside the border */
+  margin: 0 auto;           /* center horizontally */
+  margin-bottom: 24px;
+}
+```
+
+Set \`box-sizing: border-box\` globally so padding doesn't add to your element's total size.
+
+```css
+/* Always include this reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+```
+
+## Colors
+
+```css
+.element {
+  /* Named color */
+  color: red;
+
+  /* Hex */
+  color: #3b82f6;
+
+  /* RGB */
+  color: rgb(59, 130, 246);
+
+  /* RGBA (with transparency) */
+  background-color: rgba(0, 0, 0, 0.5);
+
+  /* HSL */
+  color: hsl(217, 91%, 60%);
+}
+```
+
+## Typography
+
+```css
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+h1 {
+  font-size: 2.5rem;    /* 40px */
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+p {
+  font-size: 1rem;      /* 16px */
+  max-width: 65ch;      /* optimal reading width */
+}
+```
+
+## Display Property
+
+```css
+/* Block — takes full width, stacks vertically */
+div, p, h1 { display: block; }
+
+/* Inline — sits in text flow, no width/height */
+span, a, strong { display: inline; }
+
+/* Inline-block — inline flow but accepts width/height */
+.badge { display: inline-block; padding: 4px 8px; }
+
+/* None — hides the element entirely */
+.hidden { display: none; }
+```
+
+## Full Example
+
+```css
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1f2937;
+  background-color: #f9fafb;
+}
+
+header {
+  background-color: #1e40af;
+  color: white;
+  padding: 16px 32px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 16px;
+  opacity: 0.8;
+}
+
+nav a:hover {
+  opacity: 1;
+}
+
+main {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 24px;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+footer {
+  text-align: center;
+  padding: 24px;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+```
+
+## Assignment
+
+**Small task:** Style your HTML from Lesson 1 — add colors, fonts, and spacing.
+
+**Main task:** Add CSS to your Profile Page. Make it look clean and professional.
+
+**Bonus:** Use CSS custom properties (variables):
+
+```css
+:root {
+  --color-primary: #3b82f6;
+  --color-text: #1f2937;
+  --spacing-md: 16px;
+}
+```

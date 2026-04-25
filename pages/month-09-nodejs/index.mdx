@@ -1,0 +1,59 @@
+---
+title: Month 9 — Node.js Basics
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# 🔴 Month 9 — Node.js Basics
+
+**Goal:** Build your first REST API server with Node.js and Express.
+
+<Callout type="info">
+  Everything you learned in JavaScript applies here — Node.js is just JavaScript running on the server instead of the browser. No DOM, but you have access to the file system, network, and databases.
+</Callout>
+
+## Topics
+
+| Lesson | Topic |
+|---|---|
+| 1 | Node.js Fundamentals — modules, fs, path, process |
+| 2 | Express.js — creating a web server |
+| 3 | Routing & Middleware — organizing your API |
+
+## Project
+
+- **Simple REST API** — a fully functional CRUD API for todos/posts (in-memory, no DB yet)
+
+## Setup
+
+```bash
+mkdir my-api && cd my-api
+npm init -y
+npm install express cors dotenv
+npm install -D nodemon
+```
+
+```json filename="package.json"
+{
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  }
+}
+```
+
+## Weekly Schedule
+
+<Steps>
+  ### Week 1
+  Node.js — modules, CommonJS vs ESM, built-in modules
+
+  ### Week 2
+  Express — server, routes, request/response
+
+  ### Week 3
+  Middleware — body parsing, CORS, error handling, logging
+
+  ### Week 4
+  Build REST API + test with Postman/Thunder Client
+</Steps>

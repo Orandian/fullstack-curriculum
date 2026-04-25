@@ -1,0 +1,142 @@
+---
+title: Lesson 2 — Types in React
+---
+
+# Lesson 2 — Types in React
+
+## Typing Props
+
+```tsx filename="Button.tsx"
+// Define prop types with an interface
+interface ButtonProps {
+  label: string;
+  onClick: () => void;
+  variant?: 'primary' | 'outline' | 'ghost';
+  disabled?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+function Button({ label, onClick, variant = 'primary', disabled = false }: ButtonProps) {
+  return (
+    <button className={`btn btn-${variant}`} onClick={onClick} disabled={disabled}>
+      {label}
+    </button>
+  );
+}
+```
+
+## Typing useState
+
+```tsx filename="Counter.tsx"
+import { useState } from 'react';
+
+function Counter() {
+  const [count, setCount] = useState<number>(0);     // explicit
+  const [name, setName] = useState('');              // inferred as string
+  const [user, setUser] = useState<User | null>(null); // nullable
+
+  // Typing the setter with functional update
+  const increment = () => setCount(prev => prev + 1);
+
+  return <button onClick={increment}>{count}</button>;
+}
+```
+
+## Typing useRef
+
+```tsx filename="FocusInput.tsx"
+import { useRef, useEffect } from 'react';
+
+function FocusInput() {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();  // ?. = optional chaining (safe if null)
+  }, []);
+
+  return <input ref={inputRef} type="text" />;
+}
+```
+
+## Typing Event Handlers
+
+```tsx filename="Form.tsx"
+function Form() {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log(e.target.value);
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+  }
+
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
+    console.log(e.currentTarget.id);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === 'Enter') { /* ... */ }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input onChange={handleChange} onKeyDown={handleKeyDown} />
+      <button id="submit" onClick={handleClick}>Submit</button>
+    </form>
+  );
+}
+```
+
+## Typing Custom Hooks
+
+```tsx filename="hooks/useFetch.ts"
+import { useState, useEffect } from 'react';
+
+interface FetchState<T> {
+  data: T | null;
+  loading: boolean;
+  error: string | null;
+}
+
+function useFetch<T>(url: string): FetchState<T> {
+  const [state, setState] = useState<FetchState<T>>({
+    data: null, loading: true, error: null,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    setState({ data: null, loading: true, error: null });
+
+    fetch(url)
+      .then(r => { if (!r.ok) throw new Error(`${r.status}`); return r.json(); })
+      .then((data: T) => { if (!cancelled) setState({ data, loading: false, error: null }); })
+      .catch(err => { if (!cancelled) setState({ data: null, loading: false, error: err.message }); });
+
+    return () => { cancelled = true; };
+  }, [url]);
+
+  return state;
+}
+
+// Usage
+interface User { id: number; name: string; email: string; }
+
+function UserList() {
+  const { data: users, loading, error } = useFetch<User[]>(
+    'https://jsonplaceholder.typicode.com/users'
+  );
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
+  return <ul>{users?.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
+}
+```
+
+## Assignment
+
+**Small task:** Type the `TodoItem` component from Month 5 — define `TodoItemProps` fully.
+
+**Main task:** Refactor your Month 6 multi-page app to TypeScript — every component, hook, and util file.
+
+**Bonus:** Build a generic `Table<T>` component that accepts `columns` and `rows` and renders any data shape.

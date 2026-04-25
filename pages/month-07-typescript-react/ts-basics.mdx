@@ -1,0 +1,150 @@
+---
+title: Lesson 1 — TypeScript Basics
+---
+
+import { Callout } from 'nextra/components'
+
+# Lesson 1 — TypeScript Basics
+
+## Primitive Types
+
+```ts filename="basics.ts"
+const name: string = 'Yan Naing';
+const age: number = 25;
+const isActive: boolean = true;
+const nothing: null = null;
+const notSet: undefined = undefined;
+
+// TypeScript infers types — you usually don't need to annotate
+const name = 'Yan Naing';  // TypeScript knows this is string
+const age = 25;             // TypeScript knows this is number
+```
+
+## Arrays & Objects
+
+```ts filename="basics.ts"
+// Arrays
+const names: string[] = ['Alice', 'Bob'];
+const scores: number[] = [90, 85, 92];
+const flags: Array<boolean> = [true, false, true];
+
+// Objects — type alias
+type User = {
+  id: number;
+  name: string;
+  email: string;
+  role?: string;   // ? = optional
+};
+
+const user: User = { id: 1, name: 'Yan', email: 'yan@gmail.com' };
+
+// Interface (same but supports extends)
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  inStock: boolean;
+}
+```
+
+## Union & Intersection Types
+
+```ts filename="basics.ts"
+// Union — can be one OR the other
+type Status = 'idle' | 'loading' | 'success' | 'error';
+type ID = string | number;
+
+let status: Status = 'loading';
+status = 'success'; // OK
+status = 'pending'; // ❌ TS Error
+
+// Intersection — must satisfy BOTH
+type Admin = User & { permissions: string[] };
+```
+
+## Functions
+
+```ts filename="basics.ts"
+// Parameter and return types
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow functions
+const greet = (name: string): string => `Hello, ${name}!`;
+
+// Optional and default params
+function createUser(name: string, role?: string, active = true): User {
+  return { id: Date.now(), name, email: '', role, active };
+}
+
+// Void — function returns nothing
+function logError(msg: string): void {
+  console.error(msg);
+}
+```
+
+## Generics
+
+```ts filename="generics.ts"
+// Generic function — works with any type
+function first<T>(arr: T[]): T | undefined {
+  return arr[0];
+}
+
+first([1, 2, 3]);           // returns number
+first(['a', 'b', 'c']);     // returns string
+
+// Generic interface
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+}
+
+type UsersResponse = ApiResponse<User[]>;
+type PostResponse  = ApiResponse<Post>;
+
+// Generic utility types
+type ReadonlyUser = Readonly<User>;
+type PartialUser  = Partial<User>;     // all optional
+type RequiredUser = Required<User>;    // all required
+type UserPreview  = Pick<User, 'id' | 'name'>;
+type UserNoId     = Omit<User, 'id'>;
+```
+
+## Enums
+
+```ts filename="basics.ts"
+enum UserRole {
+  Admin = 'ADMIN',
+  Editor = 'EDITOR',
+  Viewer = 'VIEWER',
+}
+
+const role: UserRole = UserRole.Admin;
+```
+
+<Callout type="info">
+  Prefer `type` or `as const` over `enum` in modern TypeScript. Enums add runtime code that plain types don't.
+</Callout>
+
+```ts filename="better.ts"
+// Prefer this
+const UserRole = {
+  Admin: 'ADMIN',
+  Editor: 'EDITOR',
+  Viewer: 'VIEWER',
+} as const;
+
+type UserRole = typeof UserRole[keyof typeof UserRole];
+// 'ADMIN' | 'EDITOR' | 'VIEWER'
+```
+
+## Assignment
+
+**Small task:** Create a `Product` type and write a function `getExpensive(products: Product[], minPrice: number): Product[]`.
+
+**Main task:** Convert your JavaScript Todo App types to TypeScript — type every variable, function parameter, and return value.
+
+**Bonus:** Create a generic `useFetch<T>` hook signature.
