@@ -1,0 +1,166 @@
+---
+title: Lesson 2 — Database Schema Design
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Database Schema Design
+
+Your schema is the backbone of your entire application. A good schema is easy to query, prevents bad data from being stored, and scales with new features. A bad schema forces you to rewrite your API and migration files every week.
+
+<Callout type="info">
+  We use **Prisma** to define our schema in code. Prisma gives you TypeScript types automatically from your schema, which catches data errors before they reach the database.
+</Callout>
+
+## Thinking in Entities and Relations
+
+An **entity** is a thing your app cares about. A **relation** is how entities connect.
+
+For a blog platform:
+- **Entities:** User, Post, Comment, Like, Tag
+- **Relations:** User *has many* Posts, Post *has many* Comments, User *has many* Likes, Post *has many* Tags
+
+## Cardinality
+
+| Type | Example | Prisma |
+|------|---------|--------|
+| **One-to-many** | User has many Posts | `@relation` with array on one side |
+| **Many-to-many** | Posts have many Tags, Tags have many Posts | Implicit join table or explicit |
+| **One-to-one** | User has one Profile | `@relation` on both sides |
+
+## Blog Platform Schema — Walkthrough
+
+```prisma
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ── User ──────────────────────────────────────────────────
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique               // must be unique — enforced at DB level
+  password  String                         // bcrypt hash — never store plain text
+  name      String
+  bio       String?                        // ? = optional field (NULL in DB)
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+
+  // Relations (not stored as columns — Prisma uses foreign keys)
+  posts     Post[]
+  comments  Comment[]
+  likes     Like[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+// ── Post ──────────────────────────────────────────────────
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique               // URL-friendly title, must be unique
+  content   String
+  published Boolean  @default(false)       // draft until author publishes
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt            // auto-updates on every save
+
+  // Foreign key — which user wrote this post
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  // Relations
+  comments  Comment[]
+  likes     Like[]
+  tags      Tag[]                          // many-to-many — Prisma creates a join table
+
+  @@index([authorId])                      // index for fast lookups by author
+  @@index([slug])
+}
+
+// ── Comment ───────────────────────────────────────────────
+model Comment {
+  id        Int      @id @default(autoincrement())
+  body      String
+  createdAt DateTime @default(now())
+
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  //                                                              ↑
+  //                           onDelete: Cascade means if the Post is deleted,
+  //                           all its comments are deleted automatically
+}
+
+// ── Like — enforces one like per user per post ────────────
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])               // composite unique — one like per user per post
+}
+
+// ── Tag — many-to-many with Post ─────────────────────────
+model Tag {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  posts Post[]                             // Prisma handles the join table automatically
+}
+```
+
+## Common Schema Mistakes
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Storing passwords in plain text | Security disaster | Always hash with bcrypt before storing |
+| No `@unique` on email | Duplicate accounts possible | Always add `@unique` to email fields |
+| No `@index` on foreign keys | Slow queries as data grows | Add `@@index([foreignKeyId])` |
+| No `onDelete` behavior | Orphaned records in DB | Decide: Cascade, SetNull, or Restrict |
+| Storing computed values | Data goes stale | Compute in the query, not in the DB |
+| Missing `updatedAt` | Can't tell when data changed | Add `@updatedAt` to mutable models |
+
+## Migrations
+
+After writing your schema:
+
+```bash
+# Create a new migration file (describes what changed)
+npx prisma migrate dev --name add-tags
+
+# Apply all pending migrations (for production / Docker startup)
+npx prisma migrate deploy
+
+# Open the Prisma Studio UI to browse your data
+npx prisma studio
+
+# Reset the database (wipes all data — dev only!)
+npx prisma migrate reset
+```
+
+## Exercise
+
+Design the schema for your team project:
+
+1. List all entities (4–6 models is typical for a junior project)
+2. Draw the relations on paper — which has `[]`, which has a single reference
+3. Identify which fields need `@unique` and which need `@index`
+4. Think through `onDelete` behavior for each relation
+5. Write the full `schema.prisma` file
+
+Have a teammate review it before running your first migration — schema changes later are painful.

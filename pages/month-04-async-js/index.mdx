@@ -4,38 +4,44 @@ title: Month 4 — Async JavaScript
 
 import { Callout, Steps } from 'nextra/components'
 
-# 🟡 Month 4 — Async JavaScript
+# 🟡 Month 4 — JavaScript Core (Part 2): Async
 
-**Goal:** Understand how JavaScript handles asynchronous operations and consume real APIs.
+**Goal:** Understand how JavaScript handles asynchronous operations, consume real APIs, and get comfortable with the patterns you'll use constantly in React and Node.
 
 <Callout type="info">
-  Async is one of the trickiest parts of JavaScript. Once you get it, everything clicks — React data fetching, Node.js servers, all of it.
+  Async is one of the trickiest parts of JavaScript — and also one of the most important. Once it clicks, React data fetching, Node.js servers, and database queries all make sense. We dedicate a full month to it.
 </Callout>
 
-## Topics
+## Topics This Month
 
 | Lesson | Topic |
-|---|---|
-| 1 | Fetch API — making HTTP requests |
-| 2 | async/await — clean async code |
+|--------|-------|
+| 1 | The Event Loop — how JS handles concurrency (one thread, non-blocking) |
+| 2 | Promises — `.then()`, `.catch()`, chaining, `Promise.all` |
+| 3 | `async`/`await` — cleaner async code, `try`/`catch` for errors |
+| 4 | Fetch API — HTTP requests, reading JSON responses, error handling |
 
 ## Projects
 
-- **Weather App** — fetch real weather data from OpenWeather API
-- **GitHub Profile Viewer** — search any GitHub user and display their repos
+- **Weather App** — fetch real weather data from OpenWeather API, display current conditions and forecast
+- **GitHub Profile Viewer** — search any GitHub username and display their repos, stars, and profile info
 
 ## Weekly Schedule
 
 <Steps>
   ### Week 1
-  Promises, the event loop, and the Fetch API
+  The Event Loop — call stack, Web APIs, callback queue, microtasks. Understanding *why* JS is non-blocking. Promises — creating them, chaining `.then()` and `.catch()`, `Promise.all` for parallel requests.
 
   ### Week 2
-  async/await — error handling with try/catch
+  `async`/`await` — syntactic sugar over Promises, error handling with `try`/`catch`/`finally`, converting Promise chains to async functions. Practice rewriting the same request three ways: callbacks → Promises → async/await.
 
   ### Week 3
-  Build Weather App
+  Fetch API deep dive — GET/POST requests, reading `Response`, parsing JSON, handling HTTP errors, setting headers. Build the Weather App.
 
   ### Week 4
-  Build GitHub API Viewer + submit both
+  Build GitHub Profile Viewer. Polish both projects. Submit. You now know enough JavaScript to start React.
 </Steps>
+
+<Callout type="warning">
+  **Common mistake:** Treating async errors silently. Always handle the error case. An unhandled promise rejection in production is a real bug.
+</Callout>

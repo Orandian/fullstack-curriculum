@@ -1,0 +1,109 @@
+---
+title: Lesson 1 — Planning a Fullstack App
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Planning a Fullstack App
+
+The most common reason student projects fail isn't a coding problem — it's a planning problem. Two people building the same feature in different ways, a frontend that assumes data the backend doesn't send, a database schema that can't support a feature added in Week 3.
+
+This lesson teaches you to plan *before* you code.
+
+<Callout type="info">
+  A 1-hour planning session prevents a 10-hour debugging session. The documents you produce here become the team's shared source of truth.
+</Callout>
+
+## Step 1: Define the App in One Sentence
+
+Before anything else, write one sentence that captures what your app does:
+
+> "A blog platform where users can write and publish posts, follow other writers, and like and comment on content."
+
+This sentence forces you to identify: **who** uses it, **what** they can do, and **what the main resource** is (posts, in this case).
+
+## Step 2: Identify Your Actors and Actions
+
+**Actors** = types of users. **Actions** = what each actor can do.
+
+For a blog platform:
+
+| Actor | Actions |
+|-------|---------|
+| Guest (not logged in) | Browse posts, read posts, view author profiles |
+| User (logged in) | All guest actions + write posts, edit/delete own posts, like posts, comment |
+| Admin | All user actions + delete any post/comment, manage users |
+
+This becomes the foundation of your **auth + RBAC system**.
+
+## Step 3: List Your Core Features (MVP)
+
+Split into **must-have** (MVP = minimum viable product) and **nice-to-have**:
+
+**Must-have:**
+- User registration and login (JWT)
+- Create, read, update, delete posts
+- Comment on posts
+- Like posts (one per user per post)
+
+**Nice-to-have:**
+- Tags on posts
+- Search
+- Email notifications
+- Image uploads
+- Follow/unfollow authors
+
+<Callout type="warning">
+  **Ship the must-haves first.** A lot of student projects fail because they try to build the nice-to-haves before the must-haves work. Treat the MVP list as a contract with yourself.
+</Callout>
+
+## Step 4: Sketch Your UI (Low-Fidelity)
+
+You don't need Figma for this. A piece of paper or a whiteboard is fine. Sketch the main screens:
+
+1. Home page (list of posts)
+2. Single post page (with comments)
+3. Write/Edit post page
+4. Auth pages (login, register)
+5. User profile page
+
+For each screen, ask: "What data does this page need?" — that tells you what your API needs to return.
+
+## Step 5: Define Your Data Flow
+
+For each main user action, trace the full request cycle:
+
+**Example: User creates a post**
+
+```
+1. User fills in the form (title, content, tags)
+2. Frontend: POST /posts with { title, content, tags } + JWT in header
+3. Backend middleware: verify JWT → attach user to req.user
+4. Backend handler: validate body → create post in DB with authorId = req.user.id
+5. Backend: return 201 { id, title, slug, author, createdAt }
+6. Frontend: redirect to /posts/:slug
+```
+
+Writing this out for your top 5 user actions before coding will prevent most integration bugs.
+
+## Step 6: Create a Project Board
+
+Create a GitHub Project or simple Notion board with columns:
+- **Backlog** — everything that needs doing
+- **In Progress** — what you're working on now
+- **Review** — PRs waiting for review
+- **Done** — shipped
+
+Turn each must-have feature into a task. Assign them to team members.
+
+## Exercise
+
+For the project you've chosen (Blog Platform, Social Network, or Learning System):
+
+1. Write the one-sentence description
+2. List actors and their actions
+3. Separate MVP from nice-to-haves
+4. Sketch 3 core screens (paper is fine)
+5. Trace the data flow for 3 user actions
+
+Don't write any code yet. Bring this to your next session for feedback.

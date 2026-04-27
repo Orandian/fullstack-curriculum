@@ -1,0 +1,192 @@
+---
+title: Lesson 4 — Docker for Developers
+---
+
+import { Callout, Steps, Tabs } from 'nextra/components'
+
+# Docker for Developers
+
+**The problem Docker solves:** "Works on my machine." With Docker, your app runs identically in development, on a teammate's computer, and in production — because everyone runs the exact same container.
+
+<Callout type="info">
+  You don't need to understand everything about Docker to benefit from it. By the end of this lesson you'll be able to containerize any Node.js app and run your full backend stack with a single command.
+</Callout>
+
+## Core Concepts
+
+| Concept | What it is |
+|---------|-----------|
+| **Image** | A blueprint for a container — like a class in OOP |
+| **Container** | A running instance of an image — like an object in OOP |
+| **Dockerfile** | Instructions for building an image |
+| **docker-compose.yml** | Defines and runs multi-container apps (e.g. api + database) |
+| **Volume** | Persistent storage that survives container restarts |
+| **Port mapping** | Connects a container port to a host machine port |
+
+## Installing Docker
+
+Download [Docker Desktop](https://www.docker.com/products/docker-desktop/) for Mac or Windows. It includes the Docker CLI and Docker Compose.
+
+Verify installation:
+
+```bash
+docker --version       # Docker version 25.x.x
+docker compose version # Docker Compose version v2.x.x
+```
+
+## Your First Dockerfile
+
+```dockerfile
+# Start from the official Node.js 20 Alpine image
+# Alpine = a minimal Linux distribution (~5MB vs ~900MB for full Debian)
+FROM node:20-alpine
+
+# Set the working directory inside the container
+# All subsequent commands run from here
+WORKDIR /app
+
+# Copy package files first — Docker caches layers
+# If package.json doesn't change, this layer (npm install) is cached
+COPY package*.json ./
+
+# Install dependencies inside the container
+RUN npm install
+
+# Copy the rest of your source code
+COPY . .
+
+# Document which port the app listens on
+# This doesn't actually publish the port — that's done with -p or in compose
+EXPOSE 3000
+
+# The command to run when the container starts
+CMD ["node", "src/index.js"]
+```
+
+Build and run:
+
+```bash
+# Build the image (. = use current directory as build context)
+docker build -t my-api .
+
+# Run the container
+# -p 3000:3000 = map host port 3000 to container port 3000
+# --rm = remove container when it stops
+docker run -p 3000:3000 --rm my-api
+```
+
+## Docker Compose — Running Everything Together
+
+For local development you often need the API + a database running together. Docker Compose handles this:
+
+```yaml
+# docker-compose.yml
+version: '3.9'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16-alpine          # official Postgres image
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: myapp
+    ports:
+      - "5432:5432"                    # host:container
+    volumes:
+      - pgdata:/var/lib/postgresql/data  # persist data between restarts
+
+  # Your API
+  api:
+    build: .                           # build from Dockerfile in current dir
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://dev:devpassword@postgres:5432/myapp
+      JWT_SECRET: dev-secret-change-in-production
+    depends_on:
+      - postgres                       # start postgres first
+    volumes:
+      - .:/app                         # mount source code for hot-reload
+      - /app/node_modules              # keep container's node_modules
+
+# Named volumes — persist across container restarts
+volumes:
+  pgdata:
+```
+
+Start everything:
+
+```bash
+# Start all services in the background
+docker compose up -d
+
+# View logs from all services
+docker compose logs -f
+
+# Stop all services
+docker compose down
+
+# Stop and remove volumes (wipe the database)
+docker compose down -v
+```
+
+## Useful Commands
+
+```bash
+# List running containers
+docker ps
+
+# List all containers (including stopped)
+docker ps -a
+
+# View logs from a specific container
+docker logs my-api-container
+
+# Open a shell inside a running container
+docker exec -it my-api-container sh
+
+# List images on your machine
+docker images
+
+# Remove a stopped container
+docker rm container-name
+
+# Remove an image
+docker rmi image-name
+
+# Remove everything unused (free up disk space)
+docker system prune
+```
+
+## .dockerignore
+
+Just like `.gitignore` — prevents copying unnecessary files into the image:
+
+```
+node_modules
+.env
+.git
+*.md
+dist
+.next
+```
+
+<Callout type="warning">
+  **Never put real secrets in your Dockerfile or docker-compose.yml.** Use environment variables and a `.env` file that you add to `.gitignore`. The examples above use dev-only values.
+</Callout>
+
+## Exercise
+
+Containerize your Month 9 REST API:
+
+1. Write a `Dockerfile` for the API
+2. Write a `docker-compose.yml` that runs the API on port 3000
+3. Run `docker compose up` and confirm the API responds at `http://localhost:3000/health`
+4. Stop and restart the containers — confirm everything still works
+
+All the backend projects in the [curriculum-projects](https://github.com/Orandian/curriculum-projects) repo (`month-09-nodejs/rest-api/`) include a working Dockerfile and docker-compose.yml to reference.
+
+## Why This Matters
+
+When you join a team, you'll often see a `docker-compose.yml` in the root of the repo with instructions like "run `docker compose up` to get started." Understanding Docker means you can get a new project running in minutes instead of spending days on environment setup. It also means your code will behave the same in CI and production as it does on your laptop.

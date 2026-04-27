@@ -1,49 +1,69 @@
-import { Callout, Cards, Card } from 'nextra/components'
+import { Callout, Cards, Card, Steps } from 'nextra/components'
 
 # 🟠 Month 11 — Fullstack Project
 
 **Goal:** Combine everything learned — React frontend + Node.js/Express backend + PostgreSQL database — into one real, deployable application.
 
-This is a \*\*team project\*\*. Work in groups of 2–3 people. Assign roles: who does frontend, who does backend, who does DB/API design. Use GitHub branches and pull requests like a real team.
+<Callout type="info">
+  This month starts with **three lessons** on how to plan and design a fullstack app before writing any code. Skipping this step is why projects fall apart halfway through. The lessons are short — the payoff is large.
+</Callout>
 
 ## Stack
 
 ```
-Frontend:  React + TypeScript + React Router + Axios
+Frontend:  Next.js 14 + TypeScript + Tailwind CSS
 Backend:   Node.js + Express + Prisma
 Database:  PostgreSQL
-Auth:      JWT
-Deployment: Vercel (frontend) + Render (backend)
+Auth:      JWT + bcrypt
+Infra:     Docker Compose
+Deploy:    Vercel (frontend) + Render (backend)
 ```
 
-## Choose Your Project
+<Callout type="warning">
+  **Why Next.js instead of plain React?** Next.js is what you'll use in almost every real job that uses React. It's what this curriculum's docs site runs on. Month 11 is where we bring it in — you have enough React knowledge now that Next.js will feel like React with superpowers, not a completely different thing. See Lesson 4 for the intro.
+</Callout>
 
-## Team Workflow
+## Month Structure
+
+| Week | Focus |
+|------|-------|
+| Week 1 | Lessons 1–3: Plan your app, design your schema, write your API contract |
+| Week 2 | Lesson 4 (Next.js) + scaffold frontend and backend repos |
+| Weeks 3–4 | Build the core features — auth, main CRUD, basic UI |
+| Week 5 | Polish, fix bugs, deploy, write README |
+
+## This is a Team Project
+
+Work in groups of 2–3 people. Assign roles: frontend, backend, DB/API design. Use GitHub branches and pull requests — not because it's required, but because this is how real teams ship software.
 
 ```bash
-# 1. One person creates the repo
-gh repo create team-project --public
-git clone https://github.com/team/team-project
+# One person creates the repo
+gh repo create team-blog-app --public
+git clone https://github.com/yourteam/team-blog-app
 
-# 2. Use branches for features
+# Use branches for features — never push to main directly
 git checkout -b feature/user-auth
 git checkout -b feature/post-crud
 git checkout -b feature/frontend-auth
 
-# 3. Pull Requests for every feature
-# Never push directly to main!
-gh pr create --title "Add user auth" --body "Closes #1"
-
-# 4. Code review before merge
+# Pull Requests for every feature
+gh pr create --title "Add JWT auth" --body "Closes #1"
+# Team reviews → approves → merges
 ```
 
 ## Project Requirements (All Options)
 
-- \[ \] User registration + login (JWT)
-- \[ \] Protected routes (frontend + backend)
-- \[ \] At least 3 database models
-- \[ \] Full CRUD for main resource
-- \[ \] Responsive UI (mobile + desktop)
-- \[ \] Deployed and accessible via public URL
-- \[ \] README with setup instructions
-- \[ \] Team GitHub workflow (branches + PRs)
+- [ ] User registration + login (JWT)
+- [ ] Protected routes on both frontend and backend
+- [ ] At least 3 database models with relations
+- [ ] Full CRUD for the main resource
+- [ ] Responsive UI (mobile + desktop with Tailwind)
+- [ ] Deployed and accessible via public URL
+- [ ] README with setup instructions and screenshots
+- [ ] GitHub workflow with feature branches + merged PRs
+
+## Choose Your Project
+
+See the [Projects](/month-11-fullstack/projects) section for three fully-specced options with data models, API endpoints, and UI requirements.
+
+The reference implementation of the **Blog Platform** is available in the [curriculum-projects](https://github.com/Orandian/curriculum-projects) repo under `month-11-fullstack/blog-platform/`.

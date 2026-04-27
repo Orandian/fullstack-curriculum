@@ -1,0 +1,220 @@
+---
+title: Lesson 4 — Introduction to Next.js
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Introduction to Next.js
+
+You've spent 6 months learning React. Next.js is React — but with everything you kept wiring up manually (routing, server rendering, image optimization, deployment) built in and working out of the box.
+
+<Callout type="info">
+  Next.js is what you'll use at most companies that use React. It's also what this curriculum's documentation site runs on. Month 11 is the right time to introduce it — your React knowledge transfers almost completely.
+</Callout>
+
+## React vs Next.js
+
+| Feature | React (Vite/CRA) | Next.js |
+|---------|-----------------|---------|
+| Routing | React Router (manual setup) | File-based (folders = routes) |
+| Rendering | Client-side only | SSR, SSG, CSR — your choice per page |
+| Data fetching | `useEffect` in browser | Server Components + Route Handlers |
+| SEO | Weak (content not in HTML) | Strong (server-rendered HTML) |
+| Images | Manual `<img>` | `<Image>` component (auto-optimized) |
+| Deployment | Any static host | Optimized on Vercel (same company) |
+
+## The App Router (Next.js 14)
+
+Next.js uses the filesystem as your router. A file at `src/app/posts/[slug]/page.tsx` becomes the route `/posts/:slug`.
+
+```
+src/app/
+├── layout.tsx          → wraps every page (navbar, footer, providers)
+├── page.tsx            → the / route (home page)
+├── posts/
+│   ├── page.tsx        → /posts (list all posts)
+│   └── [slug]/
+│       └── page.tsx    → /posts/:slug (single post)
+├── auth/
+│   ├── login/
+│   │   └── page.tsx    → /auth/login
+│   └── register/
+│       └── page.tsx    → /auth/register
+└── api/
+    └── health/
+        └── route.ts    → GET /api/health (Route Handler — replaces Express for simple endpoints)
+```
+
+## Server Components vs Client Components
+
+This is the biggest conceptual shift from plain React:
+
+```tsx
+// Server Component (default in Next.js 14)
+// Runs on the server — can fetch data directly, can't use hooks or browser APIs
+// No 'use client' directive = Server Component
+
+export default async function PostsPage() {
+  // This fetch runs on the SERVER — no useEffect needed!
+  const posts = await fetch('http://localhost:4000/posts').then(r => r.json())
+
+  return (
+    <ul>
+      {posts.map(post => <li key={post.id}>{post.title}</li>)}
+    </ul>
+  )
+}
+```
+
+```tsx
+'use client'  // ← This directive makes it a Client Component
+
+// Client Component — runs in the browser
+// Can use useState, useEffect, event handlers, browser APIs
+// Same as regular React components you've been writing
+
+import { useState } from 'react'
+
+export default function LikeButton({ postId }: { postId: number }) {
+  const [liked, setLiked] = useState(false)
+
+  async function handleLike() {
+    await fetch(`/api/posts/${postId}/like`, { method: 'POST' })
+    setLiked(!liked)
+  }
+
+  return <button onClick={handleLike}>{liked ? '❤️' : '🤍'}</button>
+}
+```
+
+**Rule of thumb:** Default to Server Components. Add `'use client'` only when you need hooks, events, or browser APIs.
+
+## Setting Up a Next.js Project
+
+```bash
+# Create a new Next.js 14 app with TypeScript + Tailwind + App Router
+npx create-next-app@latest my-blog --typescript --tailwind --app --src-dir
+
+cd my-blog
+npm run dev     # starts at http://localhost:3000
+```
+
+## Your First Page
+
+```tsx
+// src/app/page.tsx
+export default function HomePage() {
+  return (
+    <main className="container mx-auto px-4 py-16">
+      <h1 className="text-4xl font-bold mb-4">Welcome to DevBlog</h1>
+      <p className="text-gray-500">The best developer blog platform.</p>
+    </main>
+  )
+}
+```
+
+## Layout — Navbar and Footer for Every Page
+
+```tsx
+// src/app/layout.tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import Navbar from '@/components/Navbar'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: 'DevBlog',
+  description: 'A developer blog platform',
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <Navbar />
+        <main>{children}</main>
+      </body>
+    </html>
+  )
+}
+```
+
+## Fetching Data in Server Components
+
+```tsx
+// src/app/posts/page.tsx — Server Component, fetches on the server
+interface Post {
+  id: number
+  title: string
+  slug: string
+  author: { name: string }
+}
+
+export default async function PostsPage() {
+  const res = await fetch('http://localhost:4000/posts', {
+    cache: 'no-store'  // always fetch fresh data (vs cache: 'force-cache' for static)
+  })
+  const posts: Post[] = await res.json()
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-6">Posts</h1>
+      <div className="grid gap-4">
+        {posts.map(post => (
+          <article key={post.id} className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold">
+              <a href={`/posts/${post.slug}`}>{post.title}</a>
+            </h2>
+            <p className="text-gray-500 text-sm mt-1">By {post.author.name}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  )
+}
+```
+
+## Dynamic Routes
+
+```tsx
+// src/app/posts/[slug]/page.tsx
+interface Props {
+  params: { slug: string }
+}
+
+export default async function PostPage({ params }: Props) {
+  const res = await fetch(`http://localhost:4000/posts/${params.slug}`)
+  if (!res.ok) return <p>Post not found</p>
+  const post = await res.json()
+
+  return (
+    <article className="container mx-auto px-4 py-8 max-w-2xl">
+      <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
+      <p className="text-gray-500 mb-8">By {post.author.name}</p>
+      <div className="prose">{post.content}</div>
+    </article>
+  )
+}
+```
+
+## The Blog Platform Reference
+
+The Month 11 blog platform in the [curriculum-projects](https://github.com/Orandian/curriculum-projects) repo (`month-11-fullstack/blog-platform/frontend/`) is built with Next.js 14 and demonstrates:
+
+- App Router layout with AuthProvider
+- Protected pages (`'use client'` + `useAuth` redirect)
+- Dynamic `[slug]` routes
+- Centralized API client (`src/lib/api.ts`)
+- Auth Context with localStorage persistence
+- Docker multi-stage build for production
+
+Use it as a reference — read the code, understand the patterns, then build your own.
+
+## Exercise
+
+1. Create a new Next.js project with `create-next-app`
+2. Create a `/posts` page that fetches from your Month 11 API
+3. Create a `/posts/[slug]` page that shows a single post
+4. Add a layout with a navbar
+5. Add `'use client'` to one component that needs `useState`

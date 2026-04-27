@@ -1,0 +1,228 @@
+---
+title: Lesson 4 — Testing with Vitest + React Testing Library
+---
+
+import { Callout, Steps, Tabs } from 'nextra/components'
+
+# Testing with Vitest + React Testing Library
+
+**Why testing matters for your career:** Most companies that do code reviews will ask you to add tests to your PRs. Being able to write a basic test — even just a happy-path test — puts you ahead of most junior applicants.
+
+<Callout type="info">
+  We're not teaching test-driven development or 100% coverage. We're teaching you to write tests that catch real bugs and give you confidence when changing code.
+</Callout>
+
+## Tools
+
+| Tool | Purpose |
+|------|---------|
+| **Vitest** | Test runner — fast, works natively with Vite/React |
+| **React Testing Library (RTL)** | Renders React components in tests |
+| **@testing-library/jest-dom** | Extra matchers like `toBeInTheDocument()` |
+
+## Setup
+
+```bash
+npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
+```
+
+```js
+// vite.config.js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,                      // no need to import `it`, `expect`, etc.
+    environment: 'jsdom',               // simulate browser DOM
+    setupFiles: './src/test-setup.ts',  // run before each test file
+  },
+})
+```
+
+```ts
+// src/test-setup.ts
+import '@testing-library/jest-dom'   // adds .toBeInTheDocument(), .toHaveValue(), etc.
+```
+
+```json
+// package.json — add the test script
+{
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  }
+}
+```
+
+## The Golden Rule
+
+> **Test what the user sees, not implementation details.**
+
+React Testing Library is designed around this. You query by text, role, and label — not by CSS class or internal state. This means your tests don't break when you refactor the code, only when the behavior changes.
+
+## Writing Your First Test
+
+```tsx
+// src/components/Button.test.tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import Button from './Button'
+
+// describe: groups related tests
+describe('Button', () => {
+
+  // it / test: one test case
+  it('renders its label', () => {
+    render(<Button>Click me</Button>)
+
+    // screen.getByText: find element by visible text
+    // toBeInTheDocument: @testing-library/jest-dom matcher
+    expect(screen.getByText('Click me')).toBeInTheDocument()
+  })
+
+  it('calls onClick when clicked', async () => {
+    const handleClick = vi.fn()   // vi.fn() creates a mock function
+    render(<Button onClick={handleClick}>Submit</Button>)
+
+    // userEvent simulates real browser interactions (not just .click())
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }))
+
+    expect(handleClick).toHaveBeenCalledOnce()
+  })
+
+  it('is disabled when the disabled prop is passed', () => {
+    render(<Button disabled>Save</Button>)
+    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled()
+  })
+})
+```
+
+## Testing a Form
+
+```tsx
+// src/components/LoginForm.test.tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import LoginForm from './LoginForm'
+
+describe('LoginForm', () => {
+  it('shows an error when submitted empty', async () => {
+    render(<LoginForm onLogin={vi.fn()} />)
+
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }))
+
+    expect(screen.getByText(/email is required/i)).toBeInTheDocument()
+  })
+
+  it('calls onLogin with email and password on valid submit', async () => {
+    const handleLogin = vi.fn()
+    render(<LoginForm onLogin={handleLogin} />)
+
+    await userEvent.type(screen.getByLabelText(/email/i), 'user@example.com')
+    await userEvent.type(screen.getByLabelText(/password/i), 'secret123')
+    await userEvent.click(screen.getByRole('button', { name: /log in/i }))
+
+    expect(handleLogin).toHaveBeenCalledWith({
+      email: 'user@example.com',
+      password: 'secret123',
+    })
+  })
+})
+```
+
+## Testing Async Code (API calls)
+
+```tsx
+// src/components/PostList.test.tsx
+import { render, screen, waitFor } from '@testing-library/react'
+import PostList from './PostList'
+
+// Mock fetch so tests don't make real HTTP requests
+global.fetch = vi.fn()
+
+describe('PostList', () => {
+  it('shows posts after loading', async () => {
+    // Make fetch return fake data
+    vi.mocked(fetch).mockResolvedValueOnce({
+      ok: true,
+      json: async () => [
+        { id: 1, title: 'Hello World', body: 'First post' },
+      ],
+    } as Response)
+
+    render(<PostList />)
+
+    // Loading state appears first
+    expect(screen.getByText(/loading/i)).toBeInTheDocument()
+
+    // Wait for the async data to appear
+    await waitFor(() => {
+      expect(screen.getByText('Hello World')).toBeInTheDocument()
+    })
+  })
+
+  it('shows an error message when fetch fails', async () => {
+    vi.mocked(fetch).mockRejectedValueOnce(new Error('Network error'))
+
+    render(<PostList />)
+
+    await waitFor(() => {
+      expect(screen.getByText(/failed to load/i)).toBeInTheDocument()
+    })
+  })
+})
+```
+
+## Common Query Methods
+
+| Query | When to use |
+|-------|-------------|
+| `getByRole('button', { name: /submit/i })` | Buttons, links, inputs by ARIA role |
+| `getByLabelText(/email/i)` | Form inputs associated with a label |
+| `getByText(/welcome/i)` | Any visible text |
+| `getByPlaceholderText(/search/i)` | Input by placeholder |
+| `queryByText(/error/i)` | Returns null instead of throwing if not found |
+| `findByText(/loaded/i)` | Async — waits for element to appear |
+
+<Callout type="info">
+  Prefer `getByRole` over `getByTestId`. Role-based queries test the same thing screen readers use — which makes your tests accessible too.
+</Callout>
+
+## Exercise
+
+Add tests to your Month 6 Login UI or Month 5 Todo App:
+
+1. Test that the Todo input is empty after adding a task
+2. Test that a completed task shows a strikethrough
+3. Test that the login form shows an error on empty submit
+4. Test that valid login calls the auth function with correct credentials
+
+Run your tests with `npm test` and aim for green. 🟢
+
+## State Management Preview — Zustand
+
+While we're here in Month 8, here's a quick look at **Zustand** — the lightweight alternative to Context for global state that's used widely in production React apps.
+
+```tsx
+// store.ts — 10 lines to replace most Context boilerplate
+import { create } from 'zustand'
+
+interface AuthStore {
+  user: { name: string; email: string } | null
+  login: (user: { name: string; email: string }) => void
+  logout: () => void
+}
+
+export const useAuthStore = create<AuthStore>((set) => ({
+  user: null,
+  login: (user) => set({ user }),
+  logout: () => set({ user: null }),
+}))
+
+// In any component — no Provider needed:
+// const { user, login, logout } = useAuthStore()
+```
+
+Zustand vs Context: use Context for small, infrequently-updated state (theme, locale). Use Zustand when state updates frequently, is accessed from many components, or when Context re-renders are causing performance issues.

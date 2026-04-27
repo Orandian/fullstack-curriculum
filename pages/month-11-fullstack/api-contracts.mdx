@@ -1,0 +1,255 @@
+---
+title: Lesson 3 — API Contracts & Team Workflow
+---
+
+import { Callout } from 'nextra/components'
+
+# API Contracts & Team Workflow
+
+An **API contract** is a written agreement between the frontend and backend teams: "This endpoint exists. It accepts this input. It returns this output." Writing contracts before coding prevents the most common fullstack integration problem — the frontend assuming data that the backend doesn't send.
+
+<Callout type="info">
+  Even if you're building the frontend and backend yourself, writing contracts first makes you think through the data flow before you're knee-deep in code.
+</Callout>
+
+## What Goes in an API Contract
+
+For each endpoint, document:
+
+1. **Method + path** — `POST /auth/login`
+2. **Auth required?** — Yes/No, and what role
+3. **Request body** — field names, types, required/optional
+4. **Success response** — status code, body shape
+5. **Error responses** — what can go wrong and what you return
+
+## Blog Platform API Contract (Example)
+
+### Auth Endpoints
+
+```
+POST /auth/register
+Auth: None
+
+Request body:
+  name     String  required
+  email    String  required  (must be valid email format)
+  password String  required  (min 6 chars)
+
+Success 201:
+  { token: "eyJ...", user: { id, name, email, role } }
+
+Errors:
+  400 { error: "Email already in use" }
+  400 { error: "Validation failed", details: [...] }
+```
+
+```
+POST /auth/login
+Auth: None
+
+Request body:
+  email    String  required
+  password String  required
+
+Success 200:
+  { token: "eyJ...", user: { id, name, email, role } }
+
+Errors:
+  401 { error: "Invalid email or password" }
+```
+
+```
+GET /auth/me
+Auth: Bearer token required
+
+Success 200:
+  { id, name, email, role, bio, createdAt }
+
+Errors:
+  401 { error: "Unauthorized" }
+```
+
+### Posts Endpoints
+
+```
+GET /posts
+Auth: None (published posts only)
+Query params: ?tag=react (optional, filter by tag)
+
+Success 200:
+  [
+    {
+      id, title, slug, content, published, createdAt,
+      author: { id, name, email },
+      tags: [{ id, name }],
+      _count: { comments, likes }
+    }
+  ]
+```
+
+```
+GET /posts/:slug
+Auth: None
+
+Success 200:
+  {
+    id, title, slug, content, published, createdAt, updatedAt,
+    author: { id, name, email, bio },
+    tags: [{ id, name }],
+    comments: [{ id, body, createdAt, author: { id, name } }],
+    _count: { likes }
+  }
+
+Errors:
+  404 { error: "Post not found" }
+```
+
+```
+POST /posts
+Auth: Bearer token required (any role)
+
+Request body:
+  title     String    required
+  content   String    required
+  tags      String[]  optional  (e.g. ["react", "docker"])
+  published Boolean   optional  default: false
+
+Success 201:
+  { id, title, slug, content, published, createdAt, author, tags }
+
+Errors:
+  400 { error: "Title is required" }
+  401 { error: "Unauthorized" }
+```
+
+```
+PATCH /posts/:id
+Auth: Bearer token required (must be the post's author or ADMIN)
+
+Request body (all optional):
+  title     String
+  content   String
+  published Boolean
+
+Success 200:
+  { id, title, slug, content, published, updatedAt }
+
+Errors:
+  403 { error: "Not authorized to edit this post" }
+  404 { error: "Post not found" }
+```
+
+```
+DELETE /posts/:id
+Auth: Bearer token required (must be the post's author or ADMIN)
+
+Success 200:
+  { message: "Post deleted" }
+
+Errors:
+  403 { error: "Not authorized" }
+  404 { error: "Post not found" }
+```
+
+```
+POST /posts/:id/like
+Auth: Bearer token required
+(Toggles like — calling again removes the like)
+
+Success 200:
+  { liked: true, likes: 14 }
+```
+
+```
+POST /posts/:id/comments
+Auth: Bearer token required
+
+Request body:
+  body  String  required
+
+Success 201:
+  { id, body, createdAt, author: { id, name } }
+
+Errors:
+  400 { error: "Comment cannot be empty" }
+```
+
+## HTTP Status Codes — Quick Reference
+
+| Code | Meaning | When to use |
+|------|---------|-------------|
+| 200 | OK | Successful GET, PATCH, DELETE |
+| 201 | Created | Successful POST that created a resource |
+| 400 | Bad Request | Validation error, missing required field |
+| 401 | Unauthorized | No token, or token invalid/expired |
+| 403 | Forbidden | Token valid, but user doesn't have permission |
+| 404 | Not Found | Resource doesn't exist |
+| 409 | Conflict | Duplicate (e.g., email already in use) |
+| 500 | Server Error | Unhandled exception — should never reach users |
+
+<Callout type="warning">
+  **401 vs 403:** These are commonly confused. 401 = "I don't know who you are." 403 = "I know who you are, but you can't do this." Use them correctly — your frontend needs to know the difference (401 → redirect to login, 403 → show "not authorized" error).
+</Callout>
+
+## Team Git Workflow
+
+```bash
+# ─── Setup ───────────────────────────────────────────
+# Person A creates the repo and adds teammates as collaborators
+gh repo create team-project --public
+gh repo edit team-project --add-collaborator personB
+gh repo edit team-project --add-collaborator personC
+
+# Everyone clones
+git clone https://github.com/yourteam/team-project
+
+# ─── Feature branches ────────────────────────────────
+# Never commit directly to main
+git checkout -b feature/user-auth       # Person A works on auth
+git checkout -b feature/post-crud       # Person B works on posts
+git checkout -b feature/frontend-home   # Person C works on the home page
+
+# Commit often with clear messages (use conventional commits)
+git commit -m "feat: add JWT authentication middleware"
+git commit -m "fix: return 403 instead of 401 on unauthorized delete"
+git commit -m "docs: update API contract for PATCH /posts"
+
+# ─── Pull Requests ────────────────────────────────────
+# Push your branch and open a PR
+git push origin feature/user-auth
+gh pr create --title "feat: JWT auth" --body "Implements register, login, and /auth/me"
+
+# Teammates review, leave comments, request changes
+# Once approved → squash and merge to main
+# Never merge your own PR without at least one teammate review
+
+# ─── Staying up to date ───────────────────────────────
+# Pull main before starting new work
+git checkout main
+git pull origin main
+git checkout -b feature/next-thing
+```
+
+## Conventional Commits
+
+A commit message format that teams use to keep history readable:
+
+```
+feat: add post tagging
+fix: correct slug collision when titles are identical
+docs: add API contract for comments
+refactor: extract auth middleware to separate file
+test: add tests for like toggle endpoint
+chore: upgrade Prisma to 5.x
+```
+
+Format: `type: short description` — type is one of `feat`, `fix`, `docs`, `refactor`, `test`, `chore`.
+
+## Exercise
+
+Before writing any code for your project:
+
+1. List all the API endpoints your app needs (use the blog contract above as a template)
+2. For each endpoint, write: method + path, auth required, request shape, response shape
+3. Share the contract with your teammate — let them ask questions before you build
+4. Create your GitHub repo, add collaborators, and create your first three feature branches
