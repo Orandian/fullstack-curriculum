@@ -1,0 +1,86 @@
+---
+title: レッスン1 — PostgreSQL・Prisma
+---
+
+import { Callout } from 'nextra/components'
+
+# PostgreSQL・Prisma
+
+PostgreSQLはリレーショナルデータベースです。PrismaはTypeScriptでPostgreSQLを操作するためのORM（Object-Relational Mapper）です。
+
+## PostgreSQLの基本SQL
+
+```sql
+-- テーブルの作成
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- データの挿入
+INSERT INTO users (email, name) VALUES ('tanaka@example.com', '田中太郎');
+
+-- データの取得
+SELECT * FROM users;
+SELECT name, email FROM users WHERE id = 1;
+
+-- JOINで関連データを取得
+SELECT posts.title, users.name
+FROM posts
+JOIN users ON posts.user_id = users.id;
+```
+
+## Prismaのセットアップ
+
+```bash
+npm install prisma @prisma/client
+npx prisma init
+```
+
+```prisma
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  createdAt DateTime @default(now())
+}
+```
+
+```bash
+npx prisma migrate dev --name init  # マイグレーション実行
+npx prisma studio                   # データをGUIで確認
+npx prisma generate                 # クライアント生成
+```
+
+<Callout type="info">
+  PrismaはスキーマからTypeScriptの型を自動生成します。`User`・`Post`などの型が使えるようになります。
+</Callout>
+
+## 演習
+
+1. PostgreSQLとPrismaをセットアップする
+2. UserとPostのスキーマを定義してマイグレーションを実行する
+3. Prisma Studioでデータを確認する

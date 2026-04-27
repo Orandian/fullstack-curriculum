@@ -1,0 +1,86 @@
+---
+title: レッスン4 — Next.js入門
+---
+
+import { Callout, Steps } from 'nextra/components'
+
+# Next.js入門
+
+6ヶ月間Reactを学びました。Next.jsはReactです — ルーティング・サーバーレンダリング・画像最適化・デプロイが最初から使える状態で。
+
+<Callout type="info">
+  Next.jsはReactを使うほとんどの企業で採用されています。このカリキュラムのドキュメントサイトもNext.jsで動いています。Month 11が導入のタイミングです — ReactのほぼすべてがそのままNext.jsで使えます。
+</Callout>
+
+## ReactとNext.jsの比較
+
+| 機能 | React（Vite/CRA） | Next.js |
+|------|-----------------|---------|
+| ルーティング | React Router（手動設定） | ファイルベース（フォルダ=ルート） |
+| レンダリング | クライアントサイドのみ | SSR・SSG・CSR — ページごとに選択可 |
+| データ取得 | useEffect（ブラウザで） | サーバーコンポーネント + Route Handler |
+| SEO | 弱い（コンテンツがHTMLにない） | 強い（サーバーレンダリングHTML） |
+| 画像 | 手動の`<img>` | 自動最適化`<Image>` |
+| デプロイ | 任意の静的ホスト | Vercelで最適化 |
+
+## App Router（Next.js 14）
+
+ファイルシステムがルーターになります。`src/app/posts/[slug]/page.tsx`は`/posts/:slug`ルートになります。
+
+```
+src/app/
+├── layout.tsx          → 全ページを囲む（ナビ・フッター）
+├── page.tsx            → /ルート（ホームページ）
+├── posts/
+│   ├── page.tsx        → /posts（一覧）
+│   └── [slug]/
+│       └── page.tsx    → /posts/:slug（詳細）
+└── api/
+    └── health/
+        └── route.ts    → GET /api/health
+```
+
+## サーバーコンポーネント vs クライアントコンポーネント
+
+```tsx
+// サーバーコンポーネント（Next.js 14のデフォルト）
+// サーバーで実行 → データを直接取得可能 → フックやブラウザAPIは使えない
+
+export default async function PostsPage() {
+  const posts = await fetch('http://localhost:4000/posts').then(r => r.json())
+  return (
+    <ul>
+      {posts.map(post => <li key={post.id}>{post.title}</li>)}
+    </ul>
+  )
+}
+```
+
+```tsx
+'use client'  // ← クライアントコンポーネントに
+
+// ブラウザで実行 → useState・useEffect・イベントハンドラが使える
+import { useState } from 'react'
+
+export default function LikeButton({ postId }: { postId: number }) {
+  const [liked, setLiked] = useState(false)
+  return <button onClick={() => setLiked(!liked)}>{liked ? '❤️' : '🤍'}</button>
+}
+```
+
+**ルール：** デフォルトはサーバーコンポーネント。フック・イベント・ブラウザAPIが必要なときだけ`'use client'`を追加。
+
+## セットアップ
+
+```bash
+npx create-next-app@latest my-blog --typescript --tailwind --app --src-dir
+cd my-blog
+npm run dev
+```
+
+## 演習
+
+1. `create-next-app`で新しいNext.jsプロジェクトを作る
+2. `/posts`ページを作ってバックエンドAPIからデータを取得する
+3. `/posts/[slug]`の動的ルートを作る
+4. ナビゲーション付きのレイアウトを追加する

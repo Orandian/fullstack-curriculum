@@ -1,0 +1,66 @@
+---
+title: レッスン3 — フォーム管理
+---
+
+# フォーム管理
+
+Reactでのフォームは**制御コンポーネント**として実装します。すべての入力値をStateで管理します。
+
+## 制御コンポーネント
+
+```tsx
+function SignupForm() {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+  })
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+    // 入力中にエラーをクリア
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
+  }
+
+  function validate() {
+    const newErrors: Record<string, string> = {}
+    if (!form.name) newErrors.name = '名前を入力してください'
+    if (!form.email.includes('@')) newErrors.email = '有効なメールアドレスを入力してください'
+    if (form.password.length < 8) newErrors.password = 'パスワードは8文字以上にしてください'
+    return newErrors
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const newErrors = validate()
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    // 送信処理
+    console.log('送信:', form)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        <input name="name" value={form.name} onChange={handleChange} placeholder="名前" />
+        {errors.name && <p className="text-red-500">{errors.name}</p>}
+      </div>
+      <div>
+        <input name="email" value={form.email} onChange={handleChange} placeholder="メール" />
+        {errors.email && <p className="text-red-500">{errors.email}</p>}
+      </div>
+      <button type="submit">登録</button>
+    </form>
+  )
+}
+```
+
+## 演習
+
+1. 上のフォームを実装してバリデーションを追加する
+2. パスワードの表示/非表示トグルを追加する
+3. 送信成功時に確認メッセージを表示する

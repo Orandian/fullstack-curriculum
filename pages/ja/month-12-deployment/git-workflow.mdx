@@ -1,0 +1,59 @@
+---
+title: レッスン1 — Gitワークフロー
+---
+
+import { Callout } from 'nextra/components'
+
+# プロフェッショナルなGitワークフロー
+
+チームでの開発では、Gitを体系的に使います。
+
+## フィーチャーブランチワークフロー
+
+```bash
+# 新しい機能はブランチを切って開発
+git checkout -b feature/user-auth
+git checkout -b fix/login-bug
+git checkout -b chore/update-deps
+
+# 作業して定期的にコミット
+git add -A
+git commit -m "feat: add JWT authentication middleware"
+git push origin feature/user-auth
+
+# PRを作ってレビューを依頼
+gh pr create --title "Add JWT auth" --body "..."
+
+# レビュー通過後にmainにマージ
+# mainに直接プッシュしない！
+```
+
+## Conventional Commits
+
+```
+<type>(<scope>): <description>
+
+types:
+  feat:     新機能
+  fix:      バグ修正
+  docs:     ドキュメント
+  style:    フォーマット（機能変更なし）
+  refactor: リファクタリング
+  test:     テスト
+  chore:    ビルド・設定変更
+
+例：
+feat(auth): add password reset endpoint
+fix(posts): correct pagination offset calculation
+docs: update API endpoint documentation
+```
+
+<Callout type="info">
+  意味のあるコミットメッセージは将来の自分とチームへのプレゼントです。「fix」や「update」だけでは何を直したか分かりません。
+</Callout>
+
+## 演習
+
+1. フィーチャーブランチでPRを作る練習をする
+2. Conventional Commitsのルールでコミットを書く
+3. チームメンバーのPRをレビューする

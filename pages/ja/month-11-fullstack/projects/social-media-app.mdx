@@ -1,0 +1,25 @@
+---
+title: プロジェクト — ソーシャルアプリ
+---
+
+# プロジェクト：ソーシャルアプリ
+
+## 概要
+
+基本的なSNS機能を持つアプリを作成してください。
+
+## データモデル
+
+- `User`（id, email, name, bio, avatarUrl）
+- `Post`（id, content, authorId, createdAt）
+- `Like`（userId, postId）
+- `Follow`（followerId, followingId）
+- `Comment`（id, content, authorId, postId）
+
+## UI要件
+
+- [ ] フィード（フォローしているユーザーの投稿）
+- [ ] 投稿の作成（テキストのみでOK）
+- [ ] いいね・コメント
+- [ ] ユーザープロフィールページ
+- [ ] フォロー・フォロー解除

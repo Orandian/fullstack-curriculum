@@ -1,0 +1,30 @@
+---
+title: プロジェクト — ブログプラットフォーム
+---
+
+# プロジェクト：ブログプラットフォーム
+
+## 概要
+
+ライターが記事を投稿・管理できるブログプラットフォームを作成してください。
+
+## データモデル
+
+- `User`（id, email, name, password, role, createdAt）
+- `Post`（id, title, slug, content, published, authorId, createdAt）
+- `Comment`（id, content, authorId, postId, createdAt）
+
+## APIエンドポイント
+
+- `POST /api/auth/register` / `POST /api/auth/login`
+- `GET /api/posts` / `GET /api/posts/:slug`
+- `POST /api/posts` / `PUT /api/posts/:id` / `DELETE /api/posts/:id`
+- `GET /api/posts/:id/comments` / `POST /api/posts/:id/comments`
+
+## UI要件
+
+- [ ] ホームページ（公開済み記事一覧）
+- [ ] 記事詳細ページ（コメント付き）
+- [ ] ライター用ダッシュボード（自分の記事一覧・作成・編集）
+- [ ] ログイン・登録ページ
+- [ ] レスポンシブデザイン

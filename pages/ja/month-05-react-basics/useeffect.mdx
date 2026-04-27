@@ -1,0 +1,68 @@
+---
+title: レッスン3 — useEffect
+---
+
+import { Callout } from 'nextra/components'
+
+# useEffect
+
+`useEffect`はコンポーネントが**外の世界と連携**するためのフックです。データ取得・タイマー・イベントリスナー・DOM操作などに使います。
+
+## 基本的な使い方
+
+```tsx
+import { useState, useEffect } from 'react'
+
+function UserProfile({ userId }: { userId: number }) {
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // コンポーネントがマウントされた後に実行
+    async function fetchUser() {
+      setLoading(true)
+      const res = await fetch(`/api/users/${userId}`)
+      const data = await res.json()
+      setUser(data)
+      setLoading(false)
+    }
+    fetchUser()
+  }, [userId]) // userIdが変わるたびに再実行
+
+  if (loading) return <p>読み込み中...</p>
+  return <div>{user?.name}</div>
+}
+```
+
+## 依存配列
+
+```tsx
+useEffect(() => {
+  // ...
+}, [])          // 空の配列 → マウント時に1回だけ実行
+}, [value])     // valueが変わるたびに実行
+)               // 依存配列なし → 毎レンダリングで実行（避ける）
+```
+
+## クリーンアップ
+
+```tsx
+useEffect(() => {
+  const timer = setInterval(() => {
+    setTime(new Date())
+  }, 1000)
+
+  // クリーンアップ関数（コンポーネントがアンマウントされるとき実行）
+  return () => clearInterval(timer)
+}, [])
+```
+
+<Callout type="info">
+  クリーンアップを忘れると**メモリリーク**が発生します。タイマー・イベントリスナー・WebSocketなどは必ずクリーンアップしてください。
+</Callout>
+
+## 演習
+
+1. コンポーネントがマウントされたときにAPIからデータを取得して表示する
+2. 1秒ごとに更新するデジタル時計を作る（アンマウント時にクリーンアップ）
+3. スクロール位置を追跡してヘッダーのスタイルを変えるフックを作る

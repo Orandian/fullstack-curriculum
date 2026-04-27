@@ -1,0 +1,96 @@
+---
+title: レッスン4 — Docker入門
+---
+
+import { Callout } from 'nextra/components'
+
+# Docker入門
+
+Dockerは「自分のマシンで動く」という問題を解決します。コンテナ化されたアプリはどこでも同じ動作をします。
+
+<Callout type="info">
+  Dockerを理解しなくてもアプリは作れますが、チームに入ったとき「`docker compose up`で起動して」と言われます。Dockerがわかれば数分でセットアップできます。
+</Callout>
+
+## 基本概念
+
+| 概念 | 説明 |
+|------|------|
+| **イメージ** | コンテナの設計図（クラスに相当） |
+| **コンテナ** | イメージを実行したもの（インスタンスに相当） |
+| **Dockerfile** | イメージを作る手順書 |
+| **docker-compose.yml** | 複数コンテナを一緒に管理 |
+| **ボリューム** | コンテナ再起動後もデータを保持 |
+
+## Dockerfile
+
+```dockerfile
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["node", "src/index.js"]
+```
+
+```bash
+docker build -t my-api .
+docker run -p 3000:3000 --rm my-api
+```
+
+## Docker Compose
+
+```yaml
+# docker-compose.yml
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: myapp
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://dev:devpassword@postgres:5432/myapp
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  pgdata:
+```
+
+```bash
+docker compose up -d      # バックグラウンドで起動
+docker compose logs -f    # ログを追跡
+docker compose down       # 停止
+docker compose down -v    # 停止+データ削除
+```
+
+<Callout type="warning">
+  シークレット（APIキー・パスワード）はDockerfileやdocker-compose.ymlに直接書かない。`.env`ファイルを使って、`.gitignore`に追加すること。
+</Callout>
+
+## 演習
+
+1. Month 9のAPIのDockerfileを書く
+2. APIとPostgreSQLを動かすdocker-compose.ymlを作る
+3. `docker compose up`でAPIが起動することを確認する

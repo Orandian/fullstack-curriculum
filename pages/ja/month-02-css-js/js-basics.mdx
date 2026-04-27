@@ -1,0 +1,115 @@
+---
+title: レッスン3 — JavaScript基礎
+---
+
+import { Callout } from 'nextra/components'
+
+# JavaScript基礎
+
+JavaScriptはウェブページを**インタラクティブ**にするプログラミング言語です。HTMLとCSSが見た目を作り、JavaScriptが動作を追加します。
+
+<Callout type="info">
+  JavaScriptはブラウザで動くプログラミング言語です。Node.jsを使えばサーバーでも動きます。このプログラム全体を通して使い続けます。
+</Callout>
+
+## 変数
+
+```js
+// const — 再代入不可（推奨）
+const name = "田中太郎"
+const age = 25
+
+// let — 再代入可能
+let count = 0
+count = count + 1
+
+// var — 使わない（古い書き方）
+```
+
+## データ型
+
+```js
+// 文字列
+const greeting = "こんにちは"
+const template = `${greeting}、${name}！` // テンプレートリテラル
+
+// 数値
+const price = 1500
+const pi = 3.14
+
+// 真偽値
+const isActive = true
+const isComplete = false
+
+// 配列
+const colors = ["赤", "青", "緑"]
+console.log(colors[0]) // "赤"
+
+// オブジェクト
+const user = {
+  name: "田中太郎",
+  age: 25,
+  isActive: true,
+}
+console.log(user.name) // "田中太郎"
+```
+
+## 関数
+
+```js
+// 通常の関数
+function greet(name) {
+  return `こんにちは、${name}！`
+}
+
+// アロー関数（推奨）
+const greet = (name) => {
+  return `こんにちは、${name}！`
+}
+
+// 簡略形（1行の場合）
+const double = (n) => n * 2
+
+// 呼び出し
+console.log(greet("花子")) // "こんにちは、花子！"
+console.log(double(5))     // 10
+```
+
+## 条件分岐
+
+```js
+const score = 75
+
+if (score >= 90) {
+  console.log("優秀")
+} else if (score >= 70) {
+  console.log("良い")
+} else {
+  console.log("要努力")
+}
+
+// 三項演算子
+const label = score >= 70 ? "合格" : "不合格"
+```
+
+## ループ
+
+```js
+// forループ
+for (let i = 0; i < 5; i++) {
+  console.log(i) // 0, 1, 2, 3, 4
+}
+
+// 配列のループ
+const fruits = ["りんご", "バナナ", "みかん"]
+for (const fruit of fruits) {
+  console.log(fruit)
+}
+```
+
+## 演習
+
+1. ブラウザのコンソールを開く（F12 → Console）
+2. 変数を宣言して`console.log`で出力する
+3. 名前と年齢を引数に取り自己紹介文を返す関数を書く
+4. 1から100まで数えて3の倍数は"Fizz"、5の倍数は"Buzz"を出力するプログラムを書く

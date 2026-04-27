@@ -1,0 +1,78 @@
+---
+title: レッスン3 — 就活準備
+---
+
+import { Callout } from 'nextra/components'
+
+# 就活準備
+
+技術面接・ポートフォリオ・応募戦略の準備をします。
+
+## ポートフォリオのポイント
+
+```
+採用担当者が見るもの：
+1. GitHubのアクティビティ（緑のドット）
+2. プロジェクトのREADME（スクリーンショット・デモURL・技術スタック）
+3. コードの品質（命名・コメント・構造）
+4. コミットの習慣（meaningful commits）
+```
+
+## READMEのテンプレート
+
+```markdown
+# プロジェクト名
+
+> 一行で説明
+
+[デモを見る](https://your-app.vercel.app) · [APIドキュメント](...)
+
+## 機能
+- ✅ JWT認証（登録・ログイン）
+- ✅ 記事のCRUD
+- ✅ コメント機能
+
+## 技術スタック
+| 領域 | 技術 |
+|------|------|
+| フロントエンド | Next.js 14, TypeScript, Tailwind |
+| バックエンド | Express, Prisma, PostgreSQL |
+| デプロイ | Vercel + Render |
+
+## ローカルでの起動
+```bash
+git clone ...
+npm install
+cp .env.example .env
+docker compose up -d
+npm run dev
+```
+
+## よく聞かれる技術面接の質問
+
+```
+React:
+- useEffectとuseLayoutEffectの違いは？
+- useMemoとuseCallbackをいつ使うか？
+- Reactのレンダリングの仕組みは？
+
+JavaScript:
+- クロージャとは何か？
+- イベントループの仕組みは？
+- Promiseとasync/awaitの違いは？
+
+一般:
+- RESTとGraphQLの違いは？
+- SQLのINNER JOINとLEFT JOINの違いは？
+- HTTPSの仕組みは？
+```
+
+<Callout type="info">
+  面接の準備はLeetCodeだけではありません。自分のプロジェクトのコードをすべて説明できるようにしてください。「なぜこう実装したか」を答えられることが重要です。
+</Callout>
+
+## 演習
+
+1. 各プロジェクトのREADMEをテンプレートに従って書き直す
+2. よく聞かれる質問の答えを自分の言葉で書く
+3. 5社に応募する（スキルが完璧でなくても応募する）

@@ -1,0 +1,75 @@
+---
+title: レッスン2 — ReactでのTypeScript
+---
+
+# ReactでのTypeScript
+
+ReactコンポーネントにTypeScriptを適用する実践的なパターンを学びます。
+
+## Propsの型付け
+
+```tsx
+// インターフェースでPropsを定義
+interface ButtonProps {
+  label: string
+  variant?: "primary" | "secondary" | "danger"
+  disabled?: boolean
+  onClick: () => void
+}
+
+function Button({ label, variant = "primary", disabled, onClick }: ButtonProps) {
+  return (
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      className={variant === "primary" ? "bg-cyan-400" : "bg-gray-200"}
+    >
+      {label}
+    </button>
+  )
+}
+```
+
+## useStateの型付け
+
+```tsx
+// TypeScriptが推論できる場合（型引数不要）
+const [count, setCount] = useState(0)     // number型
+const [name, setName] = useState("")      // string型
+
+// 明示的に型を指定する場合
+const [user, setUser] = useState<User | null>(null)
+const [todos, setTodos] = useState<Todo[]>([])
+```
+
+## イベントの型付け
+
+```tsx
+function SearchInput() {
+  const [query, setQuery] = useState("")
+
+  // React.ChangeEvent<HTMLInputElement>
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setQuery(e.target.value)
+  }
+
+  // React.FormEvent<HTMLFormElement>
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    console.log("検索:", query)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input value={query} onChange={handleChange} />
+      <button type="submit">検索</button>
+    </form>
+  )
+}
+```
+
+## 演習
+
+1. 完全に型付けされた`DataTable<T>`コンポーネントを作る
+2. カスタムフック`useFetch<T>(url: string)`を作る
+3. Month 5のTodoアプリをTypeScriptに移行する

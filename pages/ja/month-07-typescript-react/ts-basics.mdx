@@ -1,0 +1,101 @@
+---
+title: レッスン1 — TypeScript基礎
+---
+
+import { Callout } from 'nextra/components'
+
+# TypeScript基礎
+
+TypeScriptはJavaScriptの上位集合です。すべての有効なJavaScriptは有効なTypeScriptです。追加されているのは**型システム**です。
+
+## 基本型
+
+```ts
+// 基本型
+const name: string = "田中太郎"
+const age: number = 25
+const isActive: boolean = true
+
+// 型推論（TypeScriptが推測する）
+const greeting = "こんにちは" // string型と推論
+const count = 0              // number型と推論
+
+// 配列
+const numbers: number[] = [1, 2, 3]
+const names: string[] = ["田中", "鈴木"]
+const mixed: (string | number)[] = ["a", 1, "b", 2]
+
+// any（できるだけ避ける）
+const anything: any = "なんでも入る"
+```
+
+## インターフェース
+
+```ts
+interface User {
+  id: number
+  name: string
+  email: string
+  role: "admin" | "user"  // ユニオン型
+  avatar?: string          // 省略可能（?）
+  createdAt: Date
+}
+
+// 使い方
+const user: User = {
+  id: 1,
+  name: "田中太郎",
+  email: "tanaka@example.com",
+  role: "user",
+  createdAt: new Date(),
+}
+```
+
+## 関数の型
+
+```ts
+// 引数と戻り値に型をつける
+function add(a: number, b: number): number {
+  return a + b
+}
+
+// アロー関数
+const multiply = (a: number, b: number): number => a * b
+
+// 省略可能な引数とデフォルト値
+function greet(name: string, greeting: string = "こんにちは"): string {
+  return `${greeting}、${name}！`
+}
+```
+
+## ジェネリクス
+
+```ts
+// 型をパラメータとして受け取る
+function getFirst<T>(arr: T[]): T {
+  return arr[0]
+}
+
+getFirst<number>([1, 2, 3])  // 1（number型）
+getFirst<string>(["a", "b"]) // "a"（string型）
+
+// APIレスポンスの型
+interface ApiResponse<T> {
+  data: T
+  status: number
+  message: string
+}
+
+type UserResponse = ApiResponse<User>
+type PostListResponse = ApiResponse<Post[]>
+```
+
+<Callout type="info">
+  最初はすべてに型をつけようとしなくて大丈夫です。TypeScriptは多くの場合、型を自動的に推論できます。型エラーが出たときに調べながら覚えていきましょう。
+</Callout>
+
+## 演習
+
+1. `Product`インターフェース（id・name・price・category・inStock）を定義する
+2. 型安全な`filterByCategory<T>()`ジェネリック関数を書く
+3. `ApiResponse<T>`型を使ったデータ取得関数を書く

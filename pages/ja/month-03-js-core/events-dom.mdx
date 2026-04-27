@@ -1,0 +1,112 @@
+---
+title: レッスン3 — スコープ・クロージャ・this
+---
+
+import { Callout } from 'nextra/components'
+
+# スコープ・クロージャ・this
+
+JavaScriptで最もよく誤解される3つの概念です。理解すると他の多くのことが突然わかるようになります。
+
+## スコープ
+
+スコープは変数がどこからアクセスできるかを決めます。
+
+```js
+// グローバルスコープ（どこからでもアクセス可能）
+const globalVar = "グローバル"
+
+function outer() {
+  // 関数スコープ
+  const outerVar = "外側"
+
+  function inner() {
+    // この関数はouterVarにアクセスできる（スコープチェーン）
+    console.log(outerVar) // "外側" ✓
+    console.log(globalVar) // "グローバル" ✓
+  }
+}
+// outerVarにはここからアクセスできない
+```
+
+## var vs let vs const
+
+```js
+// var — 関数スコープ、巻き上げられる（使わない）
+var x = 1
+if (true) {
+  var x = 2  // 同じ変数を上書き！
+}
+console.log(x) // 2
+
+// let — ブロックスコープ
+let y = 1
+if (true) {
+  let y = 2  // 別のyを作成
+}
+console.log(y) // 1 ✓
+
+// const — ブロックスコープ、再代入不可（推奨）
+const z = 1
+// z = 2  // エラー！
+```
+
+<Callout type="info">
+  **ルール：** `const`を使う。再代入が必要なときだけ`let`を使う。`var`は絶対に使わない。
+</Callout>
+
+## クロージャ
+
+クロージャは、関数が自分が作られた場所のスコープにある変数を「覚えている」機能です。
+
+```js
+function createCounter() {
+  let count = 0  // この変数は外からアクセスできない
+
+  return {
+    increment() { count++ },
+    decrement() { count-- },
+    getCount()  { return count },
+  }
+}
+
+const counter = createCounter()
+counter.increment()
+counter.increment()
+counter.getCount() // 2
+
+// countには外からアクセスできない
+// counter.count  // undefined
+```
+
+クロージャはReactのカスタムフック、イベントハンドラ、モジュールパターンで使われます。
+
+## this
+
+`this`は関数がどのように呼ばれるかによって変わります。
+
+```js
+const user = {
+  name: "田中",
+  greet() {
+    console.log(`こんにちは、${this.name}！`)
+  }
+}
+user.greet() // "こんにちは、田中！" ✓
+
+// アロー関数はthisを束縛しない（外側のthisを使う）
+const timer = {
+  seconds: 0,
+  start() {
+    setInterval(() => {
+      this.seconds++ // ✓ timerを指す
+    }, 1000)
+  }
+}
+```
+
+## 演習
+
+1. `createBankAccount(initialBalance)`関数を作る（クロージャを使って残高を非公開にする）
+2. `var`を`let`/`const`に変換してバグを修正する
+3. アロー関数と通常の関数で`this`がどう違うか確認する

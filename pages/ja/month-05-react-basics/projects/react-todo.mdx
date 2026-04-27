@@ -1,0 +1,31 @@
+---
+title: プロジェクト — React Todo
+---
+
+# プロジェクト：React Todo
+
+## 概要
+
+Month 3のTodoAppをReactでリビルドしてください。コンポーネントに分割することを意識する。
+
+## コンポーネント構成
+
+```
+<App>
+  <TodoInput />       ← 入力フォーム
+  <TodoFilter />      ← フィルタボタン（すべて・未完了・完了）
+  <TodoList>
+    <TodoItem />      ← 各Todo
+    <TodoItem />
+  </TodoList>
+  <TodoStats />       ← 完了数・残り数
+</App>
+```
+
+## 要件
+
+- [ ] Todoの追加・完了トグル・削除
+- [ ] フィルタリング（すべて・未完了・完了済み）
+- [ ] コンポーネントへの適切な分割
+- [ ] Propsを通じたデータの受け渡し
+- [ ] localStorageへの保存（useEffect）

@@ -1,0 +1,64 @@
+---
+title: レッスン3 — API契約・チームワークフロー
+---
+
+import { Callout } from 'nextra/components'
+
+# API契約・チームワークフロー
+
+フロントエンドとバックエンドが別々に作業するには、APIの仕様を事前に合意する必要があります。これを「API契約」と言います。
+
+## API契約とは
+
+```
+エンドポイント: POST /api/auth/login
+リクエスト:
+  Body: { email: string, password: string }
+レスポンス（成功）:
+  Status: 200
+  Body: { token: string, user: { id, name, email } }
+レスポンス（失敗）:
+  Status: 401
+  Body: { error: "メールアドレスまたはパスワードが違います" }
+```
+
+## ブログAPIの契約例
+
+```
+認証:
+  POST   /api/auth/register  → { token, user }
+  POST   /api/auth/login     → { token, user }
+  GET    /api/auth/me        → { user }
+
+記事:
+  GET    /api/posts          → Post[]（公開済みのみ）
+  GET    /api/posts/:slug    → Post（詳細）
+  POST   /api/posts          → Post（認証必須）
+  PUT    /api/posts/:id      → Post（本人のみ）
+  DELETE /api/posts/:id      → 204（本人または管理者のみ）
+```
+
+<Callout type="info">
+  API契約を書いてGitHubのWikiやドキュメントに保存してください。フロントエンドとバックエンドが独立して作業できます。
+</Callout>
+
+## GitHubワークフロー
+
+```bash
+# ブランチを切って作業
+git checkout -b feature/user-auth
+git checkout -b feature/post-crud
+git checkout -b feature/frontend-posts
+
+# 作業が終わったらPRを作る
+gh pr create --title "Add JWT auth" --body "Closes #1"
+
+# チームがレビューして承認後にマージ
+# mainに直接プッシュしない！
+```
+
+## 演習
+
+1. あなたのプロジェクトの全APIエンドポイントを文書化する
+2. GitHubリポジトリを作って最初のイシューを作成する
+3. 各メンバーがブランチを切って最初のPRを出す

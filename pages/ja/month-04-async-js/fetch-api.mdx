@@ -1,0 +1,93 @@
+---
+title: レッスン2 — Fetch API・エラーハンドリング
+---
+
+import { Callout } from 'nextra/components'
+
+# Fetch API・エラーハンドリング
+
+`fetch()`はブラウザ組み込みのHTTPクライアントです。外部APIとJSON形式でデータをやり取りします。
+
+## 基本的なGETリクエスト
+
+```js
+async function getUser(userId) {
+  const response = await fetch(`https://api.example.com/users/${userId}`)
+
+  // fetchはHTTPエラー（404, 500）でもthrowしない！
+  if (!response.ok) {
+    throw new Error(`HTTPエラー: ${response.status}`)
+  }
+
+  const user = await response.json()
+  return user
+}
+```
+
+## POST・PUT・DELETEリクエスト
+
+```js
+// POST（データを送信）
+async function createPost(data) {
+  const response = await fetch('https://api.example.com/posts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!response.ok) throw new Error('作成失敗')
+  return response.json()
+}
+
+// DELETE
+async function deletePost(id) {
+  await fetch(`https://api.example.com/posts/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  })
+}
+```
+
+## ローディング・エラー状態のUIパターン
+
+```js
+let state = {
+  data: null,
+  loading: false,
+  error: null,
+}
+
+async function loadData() {
+  state.loading = true
+  state.error = null
+  render()
+
+  try {
+    state.data = await fetchSomething()
+  } catch (err) {
+    state.error = err.message
+  } finally {
+    state.loading = false
+    render()
+  }
+}
+
+function render() {
+  if (state.loading) return showSpinner()
+  if (state.error) return showError(state.error)
+  showData(state.data)
+}
+```
+
+<Callout type="warning">
+  `fetch()`はネットワークエラーの場合のみ`reject`されます。404や500などのHTTPエラーは`reject`されません。必ず`response.ok`を確認してください。
+</Callout>
+
+## 演習
+
+1. JSONPlaceholder APIを使ってユーザーリストを取得・表示する
+2. ローディングスピナーとエラーメッセージを実装する
+3. フォームからデータを送信するPOSTリクエストを実装する

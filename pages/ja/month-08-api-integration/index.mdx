@@ -1,0 +1,39 @@
+import { Callout, Steps } from 'nextra/components'
+
+# 🔵 Month 8 — API連携 + テスト
+
+**目標：** 本番品質のAPIクライアントを実装し、グローバル状態管理を習得し、コンポーネントのテストを書けるようになる。
+
+<Callout type="info">
+  Month 8でフロントエンドの学習が完成します。ここまで来ると、ほとんどのReactのコードベースに貢献できるスキルが身についています。
+</Callout>
+
+## 今月のトピック
+
+| レッスン | 内容 |
+|---------|------|
+| 1 | Axios・カスタムフック — 型安全なAPIクライアント |
+| 2 | Context API・Zustand — グローバル状態管理 |
+| 3 | エラーハンドリング — Error Boundary・トースト通知 |
+| 4 | テスト — Vitest + React Testing Library |
+
+## プロジェクト
+
+- **認証UI** — JWTを使ったログイン・登録・保護されたルート
+- **APIダッシュボード** — 複数APIからデータを取得して表示
+
+## 週次スケジュール
+
+<Steps>
+  ### 1週目
+  カスタムフック `useFetch<T>` の作成。Axiosインターセプター。AbortControllerによるキャンセル。
+
+  ### 2週目
+  Context API — グローバルな認証状態。Zustand — よりシンプルな状態管理。
+
+  ### 3週目
+  Error Boundary。`react-hot-toast`によるトースト通知。楽観的更新。
+
+  ### 4週目
+  Vitest + React Testing Libraryでコンポーネントのテストを書く。
+</Steps>

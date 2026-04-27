@@ -1,0 +1,123 @@
+---
+title: レッスン2 — CSS基礎
+---
+
+import { Callout } from 'nextra/components'
+
+# CSS基礎
+
+CSSはHTMLに**スタイル**を適用するための言語です。色、フォント、スペーシング、レイアウトを制御します。
+
+## CSSの書き方
+
+```css
+/* セレクタ { プロパティ: 値; } */
+h1 {
+  color: #00e5ff;
+  font-size: 2rem;
+  font-weight: 700;
+}
+```
+
+## セレクタの種類
+
+```css
+/* タグセレクタ */
+p { color: gray; }
+
+/* クラスセレクタ */
+.card { background: white; }
+
+/* IDセレクタ（1ページに1つ） */
+#header { height: 64px; }
+
+/* 子孫セレクタ */
+nav a { text-decoration: none; }
+
+/* 疑似クラス */
+button:hover { opacity: 0.8; }
+a:focus { outline: 2px solid blue; }
+```
+
+## ボックスモデル
+
+すべてのHTML要素はボックスです。ボックスは4つの層で構成されています：
+
+```
+┌─────────────────────────────┐
+│          margin             │  ← 外側のスペース（他の要素との距離）
+│  ┌───────────────────────┐  │
+│  │       border          │  │  ← 境界線
+│  │  ┌─────────────────┐  │  │
+│  │  │    padding      │  │  │  ← 内側のスペース
+│  │  │  ┌───────────┐  │  │  │
+│  │  │  │  content  │  │  │  │  ← 実際のコンテンツ
+│  │  │  └───────────┘  │  │  │
+│  │  └─────────────────┘  │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+```
+
+```css
+.box {
+  width: 300px;
+  padding: 16px;        /* 内側のスペース */
+  border: 1px solid #ccc;
+  margin: 24px auto;    /* 外側のスペース、auto = 中央揃え */
+
+  /* box-sizingを使うと計算が楽になる */
+  box-sizing: border-box;
+}
+```
+
+<Callout type="info">
+  `box-sizing: border-box`をすべての要素に適用することをお勧めします。そうすると、paddingとborderがwidth/heightの計算に含まれます。
+</Callout>
+
+```css
+/* グローバルリセット */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+```
+
+## よく使うプロパティ
+
+```css
+/* テキスト */
+color: #333;
+font-size: 1rem;        /* 1rem = 16px（デフォルト） */
+font-weight: 700;       /* 100〜900 */
+line-height: 1.6;
+text-align: center;
+text-decoration: none;
+
+/* 背景 */
+background-color: #fff;
+background-image: url('bg.jpg');
+
+/* スペーシング */
+margin: 16px;           /* 全方向 */
+margin: 16px 24px;      /* 上下 左右 */
+margin-top: 8px;
+padding: 12px 20px;
+
+/* 境界線 */
+border: 1px solid #ccc;
+border-radius: 8px;     /* 角丸 */
+
+/* 表示 */
+display: block;
+display: inline;
+display: none;          /* 非表示 */
+opacity: 0.5;
+```
+
+## 演習
+
+1. `styles.css`を作成し、`index.html`でリンクする
+2. 全体のフォントをシステムフォントに設定する
+3. ヘッダーに背景色とパディングを追加する
+4. リンクのスタイリング（色、ホバー状態）をカスタマイズする

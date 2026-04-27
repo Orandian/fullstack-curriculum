@@ -1,0 +1,86 @@
+---
+title: レッスン1 — HTML構造
+---
+
+import { Callout } from 'nextra/components'
+
+# HTML構造
+
+HTMLはウェブページの骨格です。見た目ではなく、**意味と構造**を定義します。
+
+<Callout type="info">
+  HTMLは「HyperText Markup Language（ハイパーテキスト マークアップ言語）」の略です。テキストに意味（マークアップ）を付けるための言語です。
+</Callout>
+
+## すべてのHTMLページの構造
+
+```html
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ページタイトル</title>
+  </head>
+  <body>
+    <!-- ここにコンテンツを書く -->
+  </body>
+</html>
+```
+
+## セマンティックタグ
+
+セマンティックタグは、コンテンツの**意味**をブラウザや検索エンジン、スクリーンリーダーに伝えます。
+
+```html
+<header>   <!-- サイトのヘッダー（ナビゲーションを含む） -->
+<nav>      <!-- ナビゲーションリンク -->
+<main>     <!-- メインコンテンツ（1ページに1つ） -->
+<section>  <!-- 関連するコンテンツのセクション -->
+<article>  <!-- 独立したコンテンツ（ブログ記事など） -->
+<aside>    <!-- サイドバーや補足情報 -->
+<footer>   <!-- ページのフッター -->
+```
+
+`<div>` は意味を持たない汎用コンテナです。セマンティックタグが当てはまらない場合のみ使用します。
+
+## よく使うタグ
+
+```html
+<!-- 見出し（h1が最も重要、h6が最も小さい） -->
+<h1>メインタイトル</h1>
+<h2>セクションタイトル</h2>
+
+<!-- テキスト -->
+<p>段落テキスト</p>
+<strong>重要なテキスト（太字）</strong>
+<em>強調テキスト（斜体）</em>
+
+<!-- リンクと画像 -->
+<a href="https://example.com">リンクテキスト</a>
+<img src="photo.jpg" alt="画像の説明" />
+
+<!-- リスト -->
+<ul>  <!-- 順序なし -->
+  <li>アイテム1</li>
+  <li>アイテム2</li>
+</ul>
+<ol>  <!-- 順序あり -->
+  <li>最初</li>
+  <li>次</li>
+</ol>
+
+<!-- フォーム -->
+<form>
+  <label for="name">名前：</label>
+  <input type="text" id="name" placeholder="名前を入力" />
+  <button type="submit">送信</button>
+</form>
+```
+
+## 演習
+
+1. VS Codeを開き、`index.html`というファイルを作成する
+2. 基本構造（DOCTYPE、html、head、body）を追加する
+3. ヘッダー、メインコンテンツエリア、フッターを作成する
+4. 自己紹介の段落、趣味のリスト、GitHubへのリンクを追加する

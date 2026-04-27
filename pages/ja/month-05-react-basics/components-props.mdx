@@ -1,0 +1,99 @@
+---
+title: レッスン1 — コンポーネントとProps
+---
+
+import { Callout } from 'nextra/components'
+
+# コンポーネントとProps
+
+Reactでは、UIを**コンポーネント**と呼ばれる独立した再利用可能なパーツに分割します。
+
+## 最初のコンポーネント
+
+```tsx
+// コンポーネントは大文字で始まる関数
+export default function Greeting() {
+  return (
+    <div>
+      <h1>こんにちは！</h1>
+      <p>Reactへようこそ。</p>
+    </div>
+  )
+}
+```
+
+## JSX
+
+JSXはJavaScriptの中にHTMLのような構文を書けるものです。
+
+```tsx
+// JSXのルール
+// 1. 1つのルート要素を返す（またはフラグメントを使う）
+return (
+  <>
+    <h1>タイトル</h1>
+    <p>テキスト</p>
+  </>
+)
+
+// 2. classはclassName
+<div className="card">
+
+// 3. JavaScriptは{}で埋め込む
+<p>{user.name}さん、こんにちは！</p>
+
+// 4. 自己閉じタグ
+<img src="photo.jpg" alt="写真" />
+<br />
+```
+
+## Props — データを渡す
+
+```tsx
+// Propsを受け取るコンポーネント
+function UserCard({ name, role, avatar }: {
+  name: string
+  role: string
+  avatar: string
+}) {
+  return (
+    <div className="card">
+      <img src={avatar} alt={name} />
+      <h2>{name}</h2>
+      <p>{role}</p>
+    </div>
+  )
+}
+
+// 使い方
+<UserCard name="田中太郎" role="エンジニア" avatar="/photo.jpg" />
+<UserCard name="鈴木花子" role="デザイナー" avatar="/photo2.jpg" />
+```
+
+<Callout type="info">
+  Propsは「プロパティ」の略です。親コンポーネントから子コンポーネントにデータを渡す方法です。Propsは読み取り専用で、子コンポーネントが変更することはできません。
+</Callout>
+
+## children Props
+
+```tsx
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-lg p-6 shadow">
+      {children}
+    </div>
+  )
+}
+
+// 使い方
+<Card>
+  <h2>タイトル</h2>
+  <p>任意のコンテンツをここに入れられる</p>
+</Card>
+```
+
+## 演習
+
+1. `Button`コンポーネント（`label`と`variant`="primary"/"secondary" Props付き）を作る
+2. `ProductCard`コンポーネント（名前・価格・画像Props付き）を作る
+3. 製品の配列を`map`でProductCardのリストにレンダリングする

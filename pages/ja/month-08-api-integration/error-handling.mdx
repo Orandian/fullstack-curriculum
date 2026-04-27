@@ -1,0 +1,54 @@
+---
+title: レッスン3 — エラーハンドリング
+---
+
+# エラーハンドリング
+
+本番のアプリケーションはエラーを適切に処理して、ユーザーに分かりやすいフィードバックを提供します。
+
+## Error Boundary
+
+```tsx
+import { Component, ErrorInfo, ReactNode } from 'react'
+
+interface Props { children: ReactNode; fallback?: ReactNode }
+interface State { hasError: boolean; error?: Error }
+
+class ErrorBoundary extends Component<Props, State> {
+  state: State = { hasError: false }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('ErrorBoundary:', error, info)
+    // エラー監視サービスに送信（Sentry等）
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="p-8 text-center">
+          <h2>問題が発生しました</h2>
+          <button onClick={() => this.setState({ hasError: false })}>
+            再試行
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
+// 使い方
+<ErrorBoundary fallback={<ErrorPage />}>
+  <Dashboard />
+</ErrorBoundary>
+```
+
+## 演習
+
+1. Error Boundaryをアプリ全体に適用する
+2. `react-hot-toast`でトースト通知を実装する
+3. API失敗時に自動リトライするカスタムフックを作る

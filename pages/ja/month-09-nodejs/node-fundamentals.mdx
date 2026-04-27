@@ -1,0 +1,88 @@
+---
+title: レッスン1 — Node.js基礎
+---
+
+import { Callout } from 'nextra/components'
+
+# Node.js基礎
+
+Node.jsはブラウザの外でJavaScriptを実行するランタイムです。サーバー・CLIツール・スクリプトを作れます。
+
+<Callout type="info">
+  これまでのJavaScriptはブラウザで動いていました。Node.jsを使うと、同じJavaScriptがサーバーで動きます。`window`や`document`はありませんが、ファイル・ネットワーク・OSへのアクセスができます。
+</Callout>
+
+## モジュールシステム
+
+```js
+// CommonJS（Node.jsのデフォルト）
+const fs = require('fs')
+const path = require('path')
+const express = require('express')
+
+// ES Modules（package.jsonで"type": "module"を設定）
+import fs from 'fs'
+import path from 'path'
+import express from 'express'
+
+// 自分のモジュールをエクスポート
+// utils.js
+export function formatDate(date) {
+  return date.toLocaleDateString('ja-JP')
+}
+
+// 他のファイルでインポート
+import { formatDate } from './utils.js'
+```
+
+## ファイル操作
+
+```js
+import fs from 'fs/promises'
+import path from 'path'
+
+// ファイルを読む
+const content = await fs.readFile('data.json', 'utf8')
+const data = JSON.parse(content)
+
+// ファイルに書く
+await fs.writeFile('output.json', JSON.stringify(data, null, 2))
+
+// ディレクトリ内のファイル一覧
+const files = await fs.readdir('./src')
+```
+
+## npm とpackage.json
+
+```bash
+# プロジェクトを初期化
+npm init -y
+
+# パッケージをインストール
+npm install express
+npm install -D nodemon typescript
+
+# スクリプトを実行
+npm run dev
+npm run build
+npm test
+```
+
+```json
+{
+  "name": "my-api",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.18.0"
+  }
+}
+```
+
+## 演習
+
+1. ファイルを読んで変換して別ファイルに書くスクリプトを作る
+2. コマンドライン引数（`process.argv`）を受け取るCLIツールを作る
+3. `package.json`のscriptsセクションをカスタマイズする

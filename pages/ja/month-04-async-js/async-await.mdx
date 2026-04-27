@@ -1,0 +1,81 @@
+---
+title: レッスン1 — Promise・async/await
+---
+
+import { Callout } from 'nextra/components'
+
+# Promise・async/await
+
+JavaScriptはシングルスレッドですが、**非同期処理**を使って時間のかかる操作（API呼び出し、ファイル読み込みなど）をブロックせずに実行できます。
+
+## なぜ非同期が必要か
+
+```js
+// もし同期的にAPIを呼び出したら...
+const data = fetch('https://api.example.com/data') // 2秒かかる
+// この2秒間、ページ全体が固まる！ → ユーザー体験が最悪
+
+// 非同期なら...
+// fetch()はすぐに戻り、データが来たら処理する
+```
+
+## Promise
+
+Promiseは「将来のある時点で値が返ってくる」ことを表すオブジェクトです。
+
+```js
+// Promiseの3つの状態
+// pending（保留）→ fulfilled（成功）or rejected（失敗）
+
+const promise = fetch('https://api.example.com/users')
+
+promise
+  .then(response => response.json())  // 成功したら
+  .then(data => console.log(data))
+  .catch(error => console.error(error)) // 失敗したら
+  .finally(() => console.log('完了'))   // 必ず実行
+```
+
+## async/await（推奨）
+
+async/awaitはPromiseをより読みやすく書くための構文です。
+
+```js
+async function fetchUsers() {
+  try {
+    const response = await fetch('https://api.example.com/users')
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error('エラー:', error)
+    throw error
+  }
+}
+
+// 呼び出し
+const users = await fetchUsers()
+```
+
+<Callout type="info">
+  `await`は`async`関数の中でしか使えません。`async`をつけると関数は自動的にPromiseを返します。
+</Callout>
+
+## 並列実行
+
+```js
+// 順番に実行（遅い）
+const user = await fetchUser(1)
+const posts = await fetchPosts(1)  // userが終わるまで待つ
+
+// 並列実行（速い）
+const [user, posts] = await Promise.all([
+  fetchUser(1),
+  fetchPosts(1),  // 同時に実行！
+])
+```
+
+## 演習
+
+1. `setTimeout`をPromiseでラップする`delay(ms)`関数を書く
+2. 1秒待ってから挨拶を返す`async`関数を書く
+3. `Promise.all`で複数のAPIを並列で呼び出す

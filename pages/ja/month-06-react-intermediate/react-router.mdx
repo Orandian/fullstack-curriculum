@@ -1,0 +1,99 @@
+---
+title: レッスン1 — React Router
+---
+
+import { Callout } from 'nextra/components'
+
+# React Router
+
+React RouterはReactアプリに**クライアントサイドルーティング**を追加します。ページを再読み込みせずにURLを変えてビューを切り替えます。
+
+## セットアップ
+
+```bash
+npm install react-router-dom
+```
+
+```tsx
+// main.tsx
+import { BrowserRouter } from 'react-router-dom'
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+)
+```
+
+## ルートの定義
+
+```tsx
+// App.tsx
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import About from './pages/About'
+import PostDetail from './pages/PostDetail'
+import NotFound from './pages/NotFound'
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/posts/:id" element={<PostDetail />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  )
+}
+```
+
+## ナビゲーション
+
+```tsx
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+
+// Linkコンポーネント（<a>の代わり）
+<Link to="/about">About</Link>
+
+// NavLink（アクティブなリンクにクラスを追加）
+<NavLink
+  to="/posts"
+  className={({ isActive }) => isActive ? 'font-bold text-cyan-400' : ''}
+>
+  投稿一覧
+</NavLink>
+
+// プログラムでナビゲート
+function LoginButton() {
+  const navigate = useNavigate()
+  return (
+    <button onClick={() => navigate('/dashboard')}>
+      ログイン
+    </button>
+  )
+}
+```
+
+## URLパラメータ
+
+```tsx
+// /posts/:id のルートで
+function PostDetail() {
+  const { id } = useParams()
+  const [post, setPost] = useState(null)
+
+  useEffect(() => {
+    fetch(`/api/posts/${id}`)
+      .then(r => r.json())
+      .then(setPost)
+  }, [id])
+
+  return <article>{post?.title}</article>
+}
+```
+
+## 演習
+
+1. ホーム・About・Contactの3ページを持つアプリを作る
+2. 各記事にリンクする記事一覧ページを作る
+3. 存在しないURLにアクセスしたとき404ページを表示する

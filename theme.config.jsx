@@ -1,3 +1,5 @@
+import LanguageSwitcher from './components/LanguageSwitcher'
+
 export default {
   logo: (
     <span style={{
@@ -17,6 +19,9 @@ export default {
     link: 'https://github.com/Orandian/fullstack-curriculum',
   },
   docsRepositoryBase: 'https://github.com/Orandian/fullstack-curriculum/blob/main',
+  navbar: {
+    extraContent: <LanguageSwitcher />,
+  },
   footer: {
     text: (
       <span style={{

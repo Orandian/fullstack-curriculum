@@ -1,0 +1,25 @@
+---
+title: プロジェクト — 学習管理システム
+---
+
+# プロジェクト：学習管理システム
+
+## 概要
+
+コースと学習進捗を管理できるシンプルなLMSを作成してください。
+
+## データモデル
+
+- `User`（id, email, name, password, role）
+- `Course`（id, title, description, instructorId）
+- `Lesson`（id, title, content, order, courseId）
+- `Enrollment`（userId, courseId, enrolledAt）
+- `Progress`（userId, lessonId, completedAt）
+
+## UI要件
+
+- [ ] コース一覧ページ
+- [ ] コース詳細（レッスン一覧）
+- [ ] レッスン表示ページ（完了マーク付き）
+- [ ] 受講者ダッシュボード（進捗状況）
+- [ ] 講師ダッシュボード（コース・レッスン管理）

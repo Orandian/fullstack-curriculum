@@ -1,0 +1,96 @@
+---
+title: レッスン4 — DOM操作
+---
+
+import { Callout } from 'nextra/components'
+
+# DOM操作
+
+DOM（Document Object Model）はHTMLをJavaScriptで操作するためのAPIです。要素を取得・変更し、ユーザーの操作に反応できます。
+
+## 要素の取得
+
+```js
+// 1つの要素を取得（CSSセレクタを使用）
+const button = document.querySelector('#submit-btn')
+const title = document.querySelector('h1')
+const firstCard = document.querySelector('.card')
+
+// 複数の要素を取得
+const allCards = document.querySelectorAll('.card')
+const allLinks = document.querySelectorAll('nav a')
+```
+
+## 要素の変更
+
+```js
+// テキストを変更
+title.textContent = "新しいタイトル"
+
+// HTMLを変更（XSSに注意）
+container.innerHTML = '<p>新しい<strong>コンテンツ</strong></p>'
+
+// スタイルを変更
+element.style.color = '#00e5ff'
+element.style.display = 'none'
+
+// クラスを操作
+element.classList.add('active')
+element.classList.remove('hidden')
+element.classList.toggle('open')
+element.classList.contains('active') // true/false
+
+// 属性を変更
+img.setAttribute('src', 'new-image.jpg')
+img.getAttribute('alt')
+```
+
+## イベントリスナー
+
+```js
+const button = document.querySelector('#btn')
+
+// クリックイベント
+button.addEventListener('click', () => {
+  console.log('ボタンがクリックされました！')
+})
+
+// イベントオブジェクトを使う
+button.addEventListener('click', (event) => {
+  event.preventDefault()  // デフォルト動作を止める
+  console.log('クリック位置:', event.clientX, event.clientY)
+})
+
+// 入力イベント
+const input = document.querySelector('#search')
+input.addEventListener('input', (e) => {
+  console.log('入力値:', e.target.value)
+})
+```
+
+## 要素の作成と追加
+
+```js
+// 新しい要素を作成
+const newItem = document.createElement('li')
+newItem.textContent = '新しいアイテム'
+newItem.classList.add('list-item')
+
+// DOMに追加
+const list = document.querySelector('ul')
+list.appendChild(newItem)        // 末尾に追加
+list.prepend(newItem)            // 先頭に追加
+
+// 要素を削除
+oldItem.remove()
+```
+
+<Callout type="info">
+  DOMの変更はすぐに画面に反映されます。ユーザーが操作するたびにページが書き換わる — これがJavaScriptの醍醐味です。
+</Callout>
+
+## 演習
+
+1. ボタンをクリックすると背景色が変わるページを作る
+2. テキスト入力に文字を打つとリアルタイムでプレビューに反映される名前タグを作る
+3. 「追加」ボタンでリストにアイテムを追加し、各アイテムに「削除」ボタンをつける

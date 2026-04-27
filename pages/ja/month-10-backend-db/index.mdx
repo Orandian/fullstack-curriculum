@@ -1,0 +1,38 @@
+import { Callout, Steps } from 'nextra/components'
+
+# 🔴 Month 10 — バックエンド + データベース
+
+**目標：** PostgreSQLとPrismaでデータを永続化し、JWTを使った安全な認証システムを構築する。
+
+<Callout type="info">
+  Month 10はバックエンドの仕上げです。データベース・認証・セキュリティを学んで、本番で使えるAPIを作れるようになります。
+</Callout>
+
+## 今月のトピック
+
+| レッスン | 内容 |
+|---------|------|
+| 1 | PostgreSQL・Prisma — リレーショナルDBとORM |
+| 2 | CRUD操作 — Prismaを使ったデータ操作 |
+| 3 | JWT認証 — 登録・ログイン・保護されたルート |
+
+## プロジェクト
+
+- **CRUD API** — PostgreSQL + Prisma + Docker
+- **認証システム** — 完全なJWT認証（登録・ログイン・プロフィール）
+
+## 週次スケジュール
+
+<Steps>
+  ### 1週目
+  PostgreSQLとは何か。SQLの基礎（SELECT・INSERT・UPDATE・DELETE・JOIN）。Prismaのセットアップとスキーマ定義。
+
+  ### 2週目
+  Prisma Client — `findMany`・`findUnique`・`create`・`update`・`delete`。リレーションのクエリ。
+
+  ### 3週目
+  JWT認証 — `jsonwebtoken`・`bcrypt`。登録・ログインエンドポイント。認証ミドルウェア。
+
+  ### 4週目
+  プロジェクトの完成。セキュリティベストプラクティス（レート制限・入力バリデーション）。
+</Steps>

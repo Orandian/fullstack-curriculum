@@ -1,0 +1,72 @@
+---
+title: レッスン2 — DBスキーマ設計
+---
+
+import { Callout } from 'nextra/components'
+
+# DBスキーマ設計
+
+スキーマとはデータベースの構造です。どのテーブルがあって、どんなデータを持ち、どう関連しているかを定義します。
+
+## エンティティの特定
+
+まず「もの（名詞）」を書き出します：
+
+```
+ブログアプリ:
+  - User（ユーザー）
+  - Post（記事）
+  - Category（カテゴリ）
+  - Comment（コメント）
+  - Tag（タグ）
+```
+
+## リレーションの設計
+
+```
+User ──< Post        （1人のユーザーが複数の記事を持つ）
+Post ──< Comment     （1つの記事が複数のコメントを持つ）
+User ──< Comment     （1人のユーザーが複数のコメントを書く）
+Post >──< Tag        （多対多：1つの記事が複数のタグ、1つのタグが複数の記事）
+```
+
+## Prismaスキーマに落とし込む
+
+```prisma
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String
+  password  String
+  role      Role      @default(USER)
+  posts     Post[]
+  comments  Comment[]
+  createdAt DateTime  @default(now())
+}
+
+model Post {
+  id         Int       @id @default(autoincrement())
+  title      String
+  slug       String    @unique
+  content    String
+  published  Boolean   @default(false)
+  author     User      @relation(fields: [authorId], references: [id])
+  authorId   Int
+  comments   Comment[]
+  tags       Tag[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+enum Role { USER WRITER ADMIN }
+```
+
+<Callout type="info">
+  スキーマを最初から完璧にしようとしなくていいです。最初のバージョンで始めて、必要に応じてマイグレーションで更新します。
+</Callout>
+
+## 演習
+
+1. あなたのプロジェクトのエンティティを書き出す
+2. リレーション図を書く（紙でもOK）
+3. Prismaスキーマとして定義する

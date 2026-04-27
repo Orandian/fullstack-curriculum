@@ -1,0 +1,41 @@
+---
+title: プロジェクト — TodoApp
+---
+
+# プロジェクト：TodoApp（純粋なJavaScript）
+
+## 概要
+
+Reactを使わずに、純粋なJavaScriptだけでフル機能のTodoアプリを作成してください。
+
+## 要件
+
+- [ ] Todoの追加（Enterキーまたはボタンで）
+- [ ] Todoの完了/未完了の切り替え
+- [ ] Todoの削除
+- [ ] フィルタリング（すべて・未完了・完了済み）
+- [ ] localStorageへの保存（ページを再読み込みしてもデータが残る）
+- [ ] `state → render`パターン（状態が変わるたびにUIを再描画）
+- [ ] Tailwindでスタイリング
+
+## 実装のヒント
+
+```js
+// state → renderパターン
+let todos = []
+
+function render() {
+  const list = document.querySelector('#todo-list')
+  list.innerHTML = todos
+    .filter(filterFn)
+    .map(todo => `
+      <li class="${todo.done ? 'done' : ''}">
+        <input type="checkbox" ${todo.done ? 'checked' : ''} />
+        <span>${todo.text}</span>
+        <button class="delete-btn">削除</button>
+      </li>
+    `).join('')
+  // イベントリスナーを再設定
+  attachEventListeners()
+}
+```

@@ -1,0 +1,68 @@
+---
+title: レッスン1 — Axios・カスタムフック
+---
+
+import { Callout } from 'nextra/components'
+
+# Axiosとカスタムフック
+
+本番のReactアプリでは、APIとの通信を整理されたカスタムフックにまとめます。
+
+## カスタムフック：useFetch
+
+```tsx
+import { useState, useEffect, useRef } from 'react'
+
+interface FetchState<T> {
+  data: T | null
+  loading: boolean
+  error: string | null
+}
+
+function useFetch<T>(url: string): FetchState<T> {
+  const [state, setState] = useState<FetchState<T>>({
+    data: null,
+    loading: true,
+    error: null,
+  })
+  const abortRef = useRef<AbortController | null>(null)
+
+  useEffect(() => {
+    abortRef.current = new AbortController()
+
+    async function fetchData() {
+      setState(s => ({ ...s, loading: true, error: null }))
+      try {
+        const res = await fetch(url, { signal: abortRef.current!.signal })
+        if (!res.ok) throw new Error(`HTTPエラー ${res.status}`)
+        const data = await res.json()
+        setState({ data, loading: false, error: null })
+      } catch (err: any) {
+        if (err.name !== 'AbortError') {
+          setState(s => ({ ...s, loading: false, error: err.message }))
+        }
+      }
+    }
+
+    fetchData()
+    return () => abortRef.current?.abort()
+  }, [url])
+
+  return state
+}
+
+// 使い方
+function UserList() {
+  const { data, loading, error } = useFetch<User[]>('/api/users')
+
+  if (loading) return <p>読み込み中...</p>
+  if (error) return <p>エラー: {error}</p>
+  return <ul>{data?.map(u => <li key={u.id}>{u.name}</li>)}</ul>
+}
+```
+
+## 演習
+
+1. `useFetch<T>`フックを実装してAPIデータを表示する
+2. 検索クエリに応じて自動的に再取得するフックを作る
+3. ページネーション付きのデータ取得フックを作る

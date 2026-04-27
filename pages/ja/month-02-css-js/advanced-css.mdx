@@ -1,0 +1,78 @@
+---
+title: レッスン1 — CSS Grid & アニメーション
+---
+
+import { Callout } from 'nextra/components'
+
+# CSS Grid & アニメーション
+
+CSS Gridは**2次元のレイアウト**システムです。行と列の両方を同時に制御できます。
+
+<Callout type="info">
+  FlexboxとGridの違い：Flexboxは1次元（行か列のどちらか）、Gridは2次元（行と列の両方）を扱います。複雑なページレイアウトにはGridを使いましょう。
+</Callout>
+
+## 基本的なGrid
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;  /* 等幅3列 */
+  gap: 24px;
+}
+
+/* repeat()で書き直す */
+grid-template-columns: repeat(3, 1fr);
+
+/* auto-fillで自動的に列数を調整 */
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+```
+
+## グリッドエリア
+
+```css
+.layout {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
+  grid-template-rows: 64px 1fr 48px;
+  min-height: 100vh;
+}
+
+.header  { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main    { grid-area: main; }
+.footer  { grid-area: footer; }
+```
+
+## CSSアニメーション
+
+```css
+/* トランジション — ホバーなどの状態変化 */
+.button {
+  background: #00e5ff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3);
+}
+
+/* キーフレームアニメーション */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-text {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+```
+
+## 演習
+
+1. CSS Gridを使って写真ギャラリーレイアウトを作成する
+2. `grid-template-areas`でヘッダー・サイドバー・メイン・フッターのレイアウトを作る
+3. カードにホバー時のトランジション効果を追加する

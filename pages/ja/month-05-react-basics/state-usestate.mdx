@@ -1,0 +1,93 @@
+---
+title: レッスン2 — StateとuseState
+---
+
+import { Callout } from 'nextra/components'
+
+# StateとuseState
+
+**State（状態）** はコンポーネント内で変更される可能性のあるデータです。Stateが変わると、ReactはコンポーネントのUIを自動で更新します。
+
+## useState
+
+```tsx
+import { useState } from 'react'
+
+function Counter() {
+  // [現在の値, 更新関数] = useState(初期値)
+  const [count, setCount] = useState(0)
+
+  return (
+    <div>
+      <p>カウント: {count}</p>
+      <button onClick={() => setCount(count + 1)}>+1</button>
+      <button onClick={() => setCount(count - 1)}>-1</button>
+      <button onClick={() => setCount(0)}>リセット</button>
+    </div>
+  )
+}
+```
+
+<Callout type="warning">
+  Stateを直接変更しないこと！`count = count + 1`ではなく、必ず`setCount(count + 1)`を使ってください。直接変更してもUIは更新されません。
+</Callout>
+
+## 様々なState
+
+```tsx
+// 文字列のState
+const [name, setName] = useState('')
+
+// 真偽値のState
+const [isOpen, setIsOpen] = useState(false)
+
+// オブジェクトのState
+const [user, setUser] = useState({ name: '', age: 0 })
+// 更新するときはスプレッドで
+setUser({ ...user, name: '田中' })
+
+// 配列のState
+const [todos, setTodos] = useState([])
+// 追加
+setTodos([...todos, { id: Date.now(), text: '新しいタスク' }])
+// 削除
+setTodos(todos.filter(todo => todo.id !== id))
+```
+
+## フォームのState
+
+```tsx
+function LoginForm() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    console.log({ email, password })
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="email"
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        placeholder="メールアドレス"
+      />
+      <input
+        type="password"
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        placeholder="パスワード"
+      />
+      <button type="submit">ログイン</button>
+    </form>
+  )
+}
+```
+
+## 演習
+
+1. カウンターに「10倍」ボタンを追加する
+2. テキスト入力で名前を入力するとリアルタイムで`こんにちは、{名前}！`と表示する
+3. 商品カートコンポーネント（追加・削除・合計金額表示）を作る

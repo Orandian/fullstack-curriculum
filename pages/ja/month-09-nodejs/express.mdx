@@ -1,0 +1,77 @@
+---
+title: レッスン2 — Express.js
+---
+
+import { Callout } from 'nextra/components'
+
+# Express.js
+
+ExpressはNode.js用のシンプルなWebフレームワークです。HTTPリクエストを処理してレスポンスを返します。
+
+## 最初のExpressサーバー
+
+```js
+import express from 'express'
+
+const app = express()
+const PORT = process.env.PORT || 3000
+
+// JSONボディのパース
+app.use(express.json())
+
+// GETリクエスト
+app.get('/', (req, res) => {
+  res.json({ message: 'サーバーが動いています！' })
+})
+
+// サーバー起動
+app.listen(PORT, () => {
+  console.log(`サーバー起動: http://localhost:${PORT}`)
+})
+```
+
+## HTTP メソッドとCRUD
+
+```js
+// GET — データを取得
+app.get('/api/users', async (req, res) => {
+  const users = await db.findAll()
+  res.json(users)
+})
+
+// GET — 1件取得
+app.get('/api/users/:id', async (req, res) => {
+  const user = await db.findById(req.params.id)
+  if (!user) return res.status(404).json({ error: '見つかりません' })
+  res.json(user)
+})
+
+// POST — 作成
+app.post('/api/users', async (req, res) => {
+  const { name, email } = req.body
+  const user = await db.create({ name, email })
+  res.status(201).json(user)
+})
+
+// PUT — 更新
+app.put('/api/users/:id', async (req, res) => {
+  const user = await db.update(req.params.id, req.body)
+  res.json(user)
+})
+
+// DELETE — 削除
+app.delete('/api/users/:id', async (req, res) => {
+  await db.delete(req.params.id)
+  res.status(204).send()
+})
+```
+
+<Callout type="info">
+  HTTPステータスコード：200（OK）・201（作成）・400（リクエスト不正）・401（認証エラー）・403（権限なし）・404（見つからない）・500（サーバーエラー）
+</Callout>
+
+## 演習
+
+1. `/api/posts`のGET・POST・PUT・DELETEを実装する
+2. URLパラメータとクエリパラメータを処理する
+3. Postmanを使ってすべてのエンドポイントをテストする

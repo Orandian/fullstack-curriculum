@@ -1,0 +1,99 @@
+---
+title: レッスン3 — Flexbox
+---
+
+import { Callout } from 'nextra/components'
+
+# Flexbox
+
+Flexboxは**1次元のレイアウト**システムです。横方向（行）または縦方向（列）にアイテムを並べ、スペースを管理します。
+
+<Callout type="info">
+  Flexboxは「フレキシブルボックス」の略です。要素を柔軟に配置するための最も実用的なCSSレイアウト手法の一つです。
+</Callout>
+
+## 基本的な使い方
+
+```css
+.container {
+  display: flex;              /* Flexboxを有効化 */
+  flex-direction: row;        /* 横並び（デフォルト） */
+  justify-content: center;    /* 主軸方向の配置 */
+  align-items: center;        /* 交差軸方向の配置 */
+  gap: 16px;                  /* アイテム間のスペース */
+}
+```
+
+## 主要プロパティ
+
+```css
+/* flex-direction — アイテムの方向 */
+flex-direction: row;          /* → 横並び */
+flex-direction: column;       /* ↓ 縦並び */
+flex-direction: row-reverse;  /* ← 逆横並び */
+
+/* justify-content — 主軸方向の配置 */
+justify-content: flex-start;  /* 左寄せ（デフォルト） */
+justify-content: center;      /* 中央 */
+justify-content: flex-end;    /* 右寄せ */
+justify-content: space-between; /* 両端に配置、均等スペース */
+justify-content: space-around;  /* 均等スペース（両端にも半分） */
+
+/* align-items — 交差軸方向の配置 */
+align-items: stretch;         /* 伸ばす（デフォルト） */
+align-items: center;          /* 中央 */
+align-items: flex-start;      /* 上寄せ */
+align-items: flex-end;        /* 下寄せ */
+
+/* wrap — 折り返し */
+flex-wrap: nowrap;            /* 折り返しなし（デフォルト） */
+flex-wrap: wrap;              /* 必要に応じて折り返す */
+```
+
+## よく使うパターン
+
+```css
+/* ナビゲーションバー */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  height: 64px;
+}
+
+/* カードグリッド（折り返しあり） */
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.card {
+  flex: 1 1 300px;  /* grow shrink basis */
+}
+
+/* 垂直・水平中央揃え */
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+```
+
+## アイテムプロパティ
+
+```css
+.item {
+  flex: 1;          /* 利用可能なスペースを等分 */
+  flex: 0 0 200px;  /* 固定幅200px */
+  order: 2;         /* 表示順序を変更 */
+  align-self: flex-end; /* このアイテムだけ下揃え */
+}
+```
+
+## 演習
+
+1. Flexboxを使ってナビゲーションバーを作成する（ロゴ左、リンク右）
+2. 3枚のカードを横並びにレイアウトする
+3. ページ全体をフレックスコンテナにして、フッターを常に下部に固定する

@@ -1,0 +1,80 @@
+---
+title: レッスン4 — レスポンシブデザイン
+---
+
+import { Callout } from 'nextra/components'
+
+# レスポンシブデザイン
+
+レスポンシブデザインとは、スマートフォン・タブレット・デスクトップなど**あらゆる画面サイズで正しく表示される**ウェブページを作ることです。
+
+<Callout type="warning">
+  現在、ウェブトラフィックの60%以上がモバイルデバイスからです。モバイルで機能しないサイトは失格です。
+</Callout>
+
+## モバイルファースト
+
+まずモバイル向けにスタイルを書き、画面が大きくなるにつれてスタイルを追加します。
+
+```css
+/* モバイル（デフォルト）— min-widthなし */
+.container {
+  padding: 16px;
+  flex-direction: column;
+}
+
+/* タブレット以上（768px〜） */
+@media (min-width: 768px) {
+  .container {
+    padding: 32px;
+    flex-direction: row;
+  }
+}
+
+/* デスクトップ以上（1024px〜） */
+@media (min-width: 1024px) {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+```
+
+## viewportメタタグ（必須）
+
+```html
+<!-- headタグ内に必ず入れる -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+```
+
+これがないと、モバイルブラウザはページをデスクトップ幅で表示しようとします。
+
+## よく使うブレークポイント
+
+```css
+/* スマートフォン */ /* デフォルト、追加のCSSなし */
+@media (min-width: 640px)  { /* 大型スマートフォン */ }
+@media (min-width: 768px)  { /* タブレット */ }
+@media (min-width: 1024px) { /* 小型デスクトップ */ }
+@media (min-width: 1280px) { /* 大型デスクトップ */ }
+```
+
+## レスポンシブな単位
+
+```css
+/* 固定 vs 相対的な単位 */
+font-size: 16px;      /* 固定 — 変わらない */
+font-size: 1rem;      /* 相対的 — ユーザーの設定に従う */
+font-size: 1.2vw;     /* ビューポートの幅に対する割合 */
+font-size: clamp(1rem, 2vw, 1.5rem); /* 最小・推奨・最大 */
+
+width: 100%;          /* 親要素の幅いっぱい */
+max-width: 1200px;    /* ただし1200pxを超えない */
+```
+
+## 演習
+
+1. Month 1のランディングページをモバイルファーストでリビルドする
+2. モバイルでは縦1列、タブレット以上では横3列のカードグリッドを作る
+3. ナビゲーションをモバイルでは縦積み、デスクトップでは横並びにする
+4. Chrome DevToolsのデバイスモードで複数のサイズを確認する

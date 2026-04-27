@@ -1,0 +1,20 @@
+---
+title: プロジェクト — 認証システム
+---
+
+# プロジェクト：認証システム
+
+## 概要
+
+PostgreSQL + Prisma + JWTを使った完全な認証APIを作成してください。
+
+## 要件
+
+- [ ] `POST /api/auth/register` — 登録
+- [ ] `POST /api/auth/login` — ログイン（JWTを返す）
+- [ ] `GET /api/auth/me` — 現在のユーザー（認証必須）
+- [ ] `PUT /api/auth/profile` — プロフィール更新（認証必須）
+- [ ] `POST /api/auth/logout` — ログアウト
+- [ ] パスワードはbcryptでハッシュ化
+- [ ] JWTの有効期限設定
+- [ ] レート制限（ログインの試行回数制限）

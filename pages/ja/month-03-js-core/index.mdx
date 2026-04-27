@@ -1,0 +1,47 @@
+import { Callout, Steps } from 'nextra/components'
+
+# 🟡 Month 3 — JavaScript コア（前編）
+
+**目標：** すべての開発者が毎日使うJavaScriptの概念を深く理解する。
+
+<Callout type="warning">
+  このMonth で多くの受講生が壁に当たります。配列、オブジェクト、クロージャ、関数型メソッドは本当に難しいですが、React・Node・TypeScriptで常に使います。2ヶ月かけて学ぶ価値があります（Month 3と4）。
+</Callout>
+
+<Callout type="info">
+  Month 3は**データ構造と関数型プログラミング**に集中します。Month 4は非同期処理を扱ってからReact（Month 5）に進みます。
+</Callout>
+
+## 今月のトピック
+
+| レッスン | 内容 |
+|---------|------|
+| 1 | 配列とオブジェクト — 詳細、分割代入、スプレッド/レスト |
+| 2 | `map`・`filter`・`reduce` — 関数型プログラミングの基礎 |
+| 3 | スコープ・クロージャ・`this` — 初心者がよく飛ばす部分 |
+| 4 | エラーハンドリング — `try`/`catch`、カスタムエラー |
+| 5 | JSでロジックを構築 — ゲーム作成を通じた学習 |
+
+## プロジェクト
+
+- **TodoApp（純粋なJavaScript）** — localStorageを使った完全なCRUD、state→renderパターン
+- **JSロジックゲーム** — Snake、Tetris、メモリーカード、2048から少なくとも2つ
+
+## 週次スケジュール
+
+<Steps>
+  ### 1週目
+  配列とオブジェクト — 作成・読み取り・変更（そしてなぜ変更すべきでないか）、分割代入、スプレッド `[...arr]`、レスト `...args`。
+
+  ### 2週目
+  関数型メソッド — `map`・`filter`・`reduce`・`find`・`some`・`every`・`flat`。これらは名前のついたループに過ぎないことを理解する。
+
+  ### 3週目
+  スコープとクロージャ — `var` vs `let` vs `const`、関数スコープとブロックスコープ、クロージャパターン、さまざまな文脈での`this`。
+
+  ### 4週目
+  エラーハンドリングと防御的コーディング — `try`/`catch`/`finally`、カスタムエラー、入力値の検証。TodoAppを作成。
+
+  ### 5週目
+  JSロジックゲーム — Canvas APIを使ってSnakeまたはTetrisをゼロから作る。ループ・配列・状態管理の思考を定着させる。
+</Steps>

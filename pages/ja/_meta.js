@@ -1,0 +1,16 @@
+export default {
+  "index": "ホーム",
+  "overview": "プログラム概要",
+  "month-01-html-css": "Month 1 — HTML + CSS",
+  "month-02-css-js": "Month 2 — CSS Grid・Tailwind + JS",
+  "month-03-js-core": "Month 3 — JavaScript コア（前編）",
+  "month-04-async-js": "Month 4 — 非同期 JavaScript",
+  "month-05-react-basics": "Month 5 — React 基礎",
+  "month-06-react-intermediate": "Month 6 — React 中級",
+  "month-07-typescript-react": "Month 7 — TypeScript + React",
+  "month-08-api-integration": "Month 8 — API 連携 + テスト",
+  "month-09-nodejs": "Month 9 — Node.js + Docker",
+  "month-10-backend-db": "Month 10 — バックエンド + データベース",
+  "month-11-fullstack": "Month 11 — フルスタックプロジェクト",
+  "month-12-deployment": "Month 12 — デプロイ + 就活準備",
+}

@@ -1,0 +1,75 @@
+---
+title: レッスン2 — CRUD操作
+---
+
+# CRUD操作（Prisma）
+
+Prisma ClientでPostgreSQLのデータを取得・作成・更新・削除します。
+
+## Prisma Clientの使い方
+
+```ts
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+
+// 全件取得
+const users = await prisma.user.findMany({
+  include: { posts: true },  // 関連データも取得
+  orderBy: { createdAt: 'desc' },
+})
+
+// 1件取得
+const user = await prisma.user.findUnique({
+  where: { id: 1 },
+})
+
+// フィルタリング
+const publishedPosts = await prisma.post.findMany({
+  where: {
+    published: true,
+    author: { name: { contains: '田中' } },
+  },
+})
+
+// 作成
+const newUser = await prisma.user.create({
+  data: {
+    email: 'tanaka@example.com',
+    name: '田中太郎',
+    posts: {
+      create: { title: '最初の投稿', content: '...' },
+    },
+  },
+})
+
+// 更新
+const updated = await prisma.user.update({
+  where: { id: 1 },
+  data: { name: '新しい名前' },
+})
+
+// 削除
+await prisma.user.delete({ where: { id: 1 } })
+```
+
+## ExpressルートでPrismaを使う
+
+```ts
+// routes/posts.ts
+router.get('/', async (req, res) => {
+  try {
+    const posts = await prisma.post.findMany({
+      include: { author: { select: { name: true } } },
+    })
+    res.json(posts)
+  } catch (error) {
+    res.status(500).json({ error: 'サーバーエラー' })
+  }
+})
+```
+
+## 演習
+
+1. ユーザーの一覧取得・1件取得・作成・更新・削除APIを実装する
+2. 投稿の一覧（著者名付き）を返すAPIを実装する
+3. ページネーションを実装する（`skip`と`take`を使用）

@@ -1,0 +1,77 @@
+---
+title: レッスン2 — デプロイ
+---
+
+import { Callout } from 'nextra/components'
+
+# デプロイ
+
+アプリをインターネット上で誰でもアクセスできる場所に公開します。
+
+## フロントエンド — Vercel
+
+Next.jsはVercelにデプロイするのが最も簡単です。
+
+```bash
+npm install -g vercel
+vercel login
+
+# プロジェクトのルートで実行
+vercel
+
+# または GitHub連携で自動デプロイ
+# 1. vercel.comでGitHubリポジトリを連携
+# 2. mainへのプッシュで自動デプロイ
+```
+
+**環境変数：**
+- Vercelダッシュボード → Settings → Environment Variables
+- `NEXT_PUBLIC_API_URL=https://your-api.onrender.com`
+
+## バックエンド — Render
+
+ExpressとPostgreSQLはRenderで動かせます。
+
+```yaml
+# render.yaml
+services:
+  - type: web
+    name: my-api
+    env: node
+    buildCommand: npm install && npx prisma generate
+    startCommand: node src/index.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: my-db
+    plan: free
+```
+
+<Callout type="warning">
+  本番環境の`JWT_SECRET`はランダムで長い文字列にしてください。開発用の「dev-secret」は絶対に本番に使わないこと。
+</Callout>
+
+## 環境変数の管理
+
+```bash
+# ローカル開発
+.env.local  # フロントエンド（NEXT_PUBLIC_プレフィックス）
+.env        # バックエンド（絶対にGitにコミットしない）
+
+# .gitignoreに必ず追加
+.env
+.env.local
+.env.production
+```
+
+## 演習
+
+1. フロントエンドをVercelにデプロイする
+2. バックエンドをRenderにデプロイする
+3. 本番環境でエンドツーエンドのフローを確認する
