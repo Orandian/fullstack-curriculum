@@ -1,7 +1,16 @@
 export default {
   logo: (
-    <span style={{ fontWeight: 800, fontSize: '1.2rem' }}>
-      🚀 Fullstack Dev Program
+    <span style={{
+      fontFamily: "'JetBrains Mono', monospace",
+      fontWeight: 700,
+      fontSize: '1.05rem',
+      letterSpacing: '0.02em',
+    }}>
+      <span style={{ color: '#00e5ff' }}>&gt;</span>
+      {' '}
+      <span style={{ color: '#e2e8f0' }}>FULLSTACK</span>
+      <span style={{ color: '#ff00ff' }}>_DEV</span>
+      <span style={{ color: '#00e5ff' }}>.exe</span>
     </span>
   ),
   project: {
@@ -10,8 +19,13 @@ export default {
   docsRepositoryBase: 'https://github.com/Orandian/fullstack-curriculum/blob/main',
   footer: {
     text: (
-      <span>
-        © {new Date().getFullYear()} Fullstack Developer Program · Batch 1 · React + Node.js
+      <span style={{
+        fontFamily: "'JetBrains Mono', monospace",
+        fontSize: '0.8rem',
+        color: '#00e5ff',
+      }}>
+        user@fullstack:~${' '}
+        <span className="terminal-cursor">_</span>
       </span>
     ),
   },
@@ -19,10 +33,16 @@ export default {
     <>
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta name="description" content="12-Month Fullstack Developer Curriculum — React + Node.js" />
-      <title>Fullstack Dev Program</title>
+      <title>FULLSTACK_DEV.exe</title>
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+      />
     </>
   ),
-  primaryHue: 210,
+  primaryHue: 185,
   sidebar: {
     defaultMenuCollapseLevel: 1,
     toggleButton: true,
@@ -31,9 +51,9 @@ export default {
     backToTop: true,
   },
   editLink: {
-    text: 'Edit this page on GitHub',
+    text: '// edit this page →',
   },
   feedback: {
-    content: 'Question? Give us feedback →',
+    content: '// report an issue →',
   },
 }
