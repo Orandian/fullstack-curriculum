@@ -4,65 +4,7 @@
 
 ## What to Type
 
-```ts
-// Centralize all shared types here
-
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: 'admin' | 'editor' | 'viewer';
-  createdAt: string;
-}
-
-export interface Post {
-  id: number;
-  userId: number;
-  title: string;
-  body: string;
-}
-
-export interface Todo {
-  id: number;
-  text: string;
-  done: boolean;
-  createdAt: number;
-}
-
-export type Filter = 'all' | 'active' | 'completed';
-export type Theme = 'light' | 'dark';
-export type Status = 'idle' | 'loading' | 'success' | 'error';
-
-export interface ApiResponse<T> {
-  data: T;
-  status: number;
-  message: string;
-}
-```
-
 ## Component Props Pattern
-
-```tsx
-import type { Post } from '../types';
-
-interface PostCardProps {
-  post: Post;
-  onDelete: (id: number) => void;
-  isSelected?: boolean;
-}
-
-function PostCard({ post, onDelete, isSelected = false }: PostCardProps) {
-  return (
-    <article className={`post-card ${isSelected ? 'selected' : ''}`}>
-      <h3>{post.title}</h3>
-      <p>{post.body.slice(0, 100)}...</p>
-      <button onClick={() => onDelete(post.id)}>Delete</button>
-    </article>
-  );
-}
-
-export default PostCard;
-```
 
 ## Checklist
 

@@ -14,84 +14,8 @@
 
 ### Hamburger Menu
 
-```js
-const menuBtn = document.querySelector('#menu-toggle');
-const navLinks = document.querySelector('.nav-links');
-
-menuBtn.addEventListener('click', () => {
-  navLinks.classList.toggle('open');
-  menuBtn.setAttribute('aria-expanded',
-    navLinks.classList.contains('open')
-  );
-});
-```
-
 ### Scroll Animations
-
-```js
-// IntersectionObserver — triggers when element enters viewport
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-    }
-  });
-}, { threshold: 0.15 });
-
-// Observe all .animate elements
-document.querySelectorAll('.animate').forEach(el => observer.observe(el));
-```
-
-```css
-.animate {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s, transform 0.5s;
-}
-.animate.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-```
 
 ### Active Nav Highlight
 
-```js
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-links a');
-
-window.addEventListener('scroll', () => {
-  let current = '';
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop - 80;
-    if (window.scrollY >= sectionTop) {
-      current = section.id;
-    }
-  });
-
-  navLinks.forEach(link => {
-    link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
-  });
-});
-```
-
 ### Email Form
-
-```js
-const emailForm = document.querySelector('#email-form');
-const emailInput = document.querySelector('#email-input');
-
-emailForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = emailInput.value.trim();
-  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-
-  if (!isValid) {
-    emailInput.style.borderColor = '#ef4444';
-    return;
-  }
-
-  emailInput.style.borderColor = '#22c55e';
-  emailForm.innerHTML = '<p class="success">✅ You\'re on the list! See you August 1st.</p>';
-});
-```
