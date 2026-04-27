@@ -1,54 +1,88 @@
 /* ============================================================
-   FULLSTACK_DEV.exe — Cyberpunk Theme
+   FULLSTACK_DEV.exe — Cyberpunk Theme (Light + Dark)
    Primary: #00e5ff (cyan)  Accent: #ff00ff (magenta)
    ============================================================ */
 
-/* ── Google Fonts fallback (loaded via theme.config head) ── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
-/* ── CSS Variables ── */
+/* ── LIGHT MODE (default) ───────────────────────────────────── */
 :root {
   /* Cyberpunk palette */
-  --cyber-cyan:    #00e5ff;
-  --cyber-magenta: #ff00ff;
-  --cyber-yellow:  #ffe600;
-  --cyber-green:   #39ff14;
+  --cyber-cyan:        #0891b2;   /* darker cyan — readable on white */
+  --cyber-cyan-glow:   #00e5ff;   /* glow-only use */
+  --cyber-magenta:     #c026d3;   /* darker magenta for light */
+  --cyber-yellow:      #ca8a04;
+  --cyber-green:       #16a34a;
 
   /* Backgrounds */
-  --bg-base:       #070b12;
-  --bg-sidebar:    #080d16;
-  --bg-card:       #0d1520;
-  --bg-code:       #060a10;
+  --bg-base:           #f8fafc;
+  --bg-sidebar:        #f1f5f9;
+  --bg-card:           #ffffff;
+  --bg-code:           #1e293b;   /* code blocks stay dark */
 
   /* Text */
-  --text-primary:  #e2e8f0;
-  --text-muted:    #64748b;
-  --text-dim:      #334155;
+  --text-primary:      #0f172a;
+  --text-muted:        #64748b;
+  --text-dim:          #94a3b8;
 
   /* Borders */
-  --border-glow:   rgba(0, 229, 255, 0.25);
-  --border-dim:    rgba(0, 229, 255, 0.08);
+  --border-glow:       rgba(8, 145, 178, 0.3);
+  --border-dim:        rgba(8, 145, 178, 0.12);
 
   /* Month colours */
+  --color-m1:  #16a34a;
+  --color-m2:  #16a34a;
+  --color-m3:  #ca8a04;
+  --color-m4:  #ca8a04;
+  --color-m5:  #0891b2;
+  --color-m6:  #0891b2;
+  --color-m7:  #7c3aed;
+  --color-m8:  #7c3aed;
+  --color-m9:  #dc2626;
+  --color-m10: #dc2626;
+  --color-m11: #ea580c;
+  --color-m12: #c026d3;
+
+  /* Fonts */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── DARK MODE ──────────────────────────────────────────────── */
+html.dark {
+  --cyber-cyan:        #00e5ff;
+  --cyber-cyan-glow:   #00e5ff;
+  --cyber-magenta:     #ff00ff;
+  --cyber-yellow:      #ffe600;
+  --cyber-green:       #39ff14;
+
+  --bg-base:           #070b12;
+  --bg-sidebar:        #080d16;
+  --bg-card:           #0d1520;
+  --bg-code:           #060a10;
+
+  --text-primary:      #e2e8f0;
+  --text-muted:        #64748b;
+  --text-dim:          #334155;
+
+  --border-glow:       rgba(0, 229, 255, 0.25);
+  --border-dim:        rgba(0, 229, 255, 0.08);
+
   --color-m1:  #22c55e;
   --color-m2:  #22c55e;
   --color-m3:  #eab308;
   --color-m4:  #eab308;
-  --color-m5:  var(--cyber-cyan);
-  --color-m6:  var(--cyber-cyan);
+  --color-m5:  #00e5ff;
+  --color-m6:  #00e5ff;
   --color-m7:  #a855f7;
   --color-m8:  #a855f7;
   --color-m9:  #ef4444;
   --color-m10: #ef4444;
   --color-m11: #f97316;
-  --color-m12: var(--cyber-magenta);
-
-  /* Fonts */
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  --color-m12: #ff00ff;
 }
 
-/* ── Global Reset / Base ── */
+/* ── Global Reset / Base ────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -70,21 +104,21 @@ body {
   position: relative;
 }
 
-/* ── Grid background (subtle) ── */
+/* ── Grid background ────────────────────────────────────────── */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
 }
 
-/* ── Scanline overlay ── */
-body::after {
+/* Scanline — dark mode only */
+html.dark body::after {
   content: '';
   position: fixed;
   inset: 0;
@@ -99,71 +133,69 @@ body::after {
   z-index: 0;
 }
 
-/* ── Nextra layout overrides ── */
+/* ── Nextra navbar ──────────────────────────────────────────── */
 .nextra-nav-container {
-  background: rgba(7, 11, 18, 0.92) !important;
+  background: rgba(248, 250, 252, 0.92) !important;
   backdrop-filter: blur(12px) !important;
   border-bottom: 1px solid var(--border-glow) !important;
+}
+
+html.dark .nextra-nav-container {
+  background: rgba(7, 11, 18, 0.92) !important;
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.05) !important;
 }
 
-/* Logo area */
-.nextra-nav-container a[href='/'] {
-  transition: filter 0.2s;
-}
-.nextra-nav-container a[href='/']:hover {
-  filter: drop-shadow(0 0 8px var(--cyber-cyan));
-}
-
-/* Sidebar */
+/* ── Sidebar ────────────────────────────────────────────────── */
 .nextra-sidebar-container,
 aside.nextra-sidebar {
   background: var(--bg-sidebar) !important;
   border-right: 1px solid var(--border-dim) !important;
 }
 
-/* Sidebar links */
 .nextra-sidebar a {
   color: var(--text-muted) !important;
   font-family: var(--font-mono) !important;
   font-size: 0.8rem !important;
   transition: color 0.15s, text-shadow 0.15s;
 }
+
 .nextra-sidebar a:hover,
 .nextra-sidebar a[class*='active'] {
   color: var(--cyber-cyan) !important;
+}
+
+html.dark .nextra-sidebar a:hover,
+html.dark .nextra-sidebar a[class*='active'] {
   text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
 }
 
-/* Active sidebar item */
 .nextra-sidebar li[class*='active'] > a,
 .nextra-sidebar a[aria-current='page'] {
   color: var(--cyber-cyan) !important;
-  background: rgba(0, 229, 255, 0.07) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
   border-left: 2px solid var(--cyber-cyan) !important;
 }
 
-/* Main content area */
-main.nextra-content,
-article {
-  background: transparent !important;
-  color: var(--text-primary) !important;
+html.dark .nextra-sidebar li[class*='active'] > a,
+html.dark .nextra-sidebar a[aria-current='page'] {
+  background: rgba(0, 229, 255, 0.07) !important;
 }
 
-/* ── Typography ── */
+/* ── Typography ─────────────────────────────────────────────── */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-mono) !important;
   font-weight: 700 !important;
-  letter-spacing: -0.01em;
 }
 
 h1 {
   color: var(--cyber-cyan) !important;
   font-size: clamp(1.8rem, 4vw, 2.5rem) !important;
+}
+
+html.dark h1 {
   text-shadow:
     0 0 20px rgba(0, 229, 255, 0.5),
     0 0 40px rgba(0, 229, 255, 0.2);
-  position: relative;
 }
 
 h2 {
@@ -200,50 +232,58 @@ a {
   text-decoration: none !important;
   transition: text-shadow 0.2s;
 }
-a:hover {
+
+html.dark a:hover {
   text-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
 }
 
-/* ── Code ── */
+/* ── Code ───────────────────────────────────────────────────── */
 code {
   font-family: var(--font-mono) !important;
   font-size: 0.875em !important;
-  background: var(--bg-code) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
   color: var(--cyber-cyan) !important;
   border: 1px solid var(--border-dim) !important;
   border-radius: 4px !important;
   padding: 0.15em 0.4em !important;
 }
 
-pre {
+html.dark code {
   background: var(--bg-code) !important;
+}
+
+pre {
+  background: #1e293b !important;
   border: 1px solid var(--border-glow) !important;
   border-radius: 8px !important;
-  box-shadow:
-    0 0 0 1px rgba(0, 229, 255, 0.05),
-    0 4px 24px rgba(0, 0, 0, 0.6),
-    inset 0 0 20px rgba(0, 229, 255, 0.02) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15) !important;
   position: relative;
   overflow: hidden;
 }
 
-/* Code block top bar line */
+html.dark pre {
+  background: var(--bg-code) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 229, 255, 0.05),
+    0 4px 24px rgba(0, 0, 0, 0.6),
+    inset 0 0 20px rgba(0, 229, 255, 0.02) !important;
+}
+
 pre::before {
   content: '';
   display: block;
   height: 2px;
   background: linear-gradient(90deg, var(--cyber-cyan), var(--cyber-magenta), transparent);
-  margin-bottom: 0;
 }
 
 pre code {
   background: transparent !important;
   border: none !important;
   padding: 0 !important;
-  color: var(--text-primary) !important;
+  color: #e2e8f0 !important;
 }
 
-/* ── Tables ── */
+/* ── Tables ─────────────────────────────────────────────────── */
 table {
   border-collapse: collapse !important;
   width: 100% !important;
@@ -252,8 +292,12 @@ table {
 }
 
 thead tr {
-  background: rgba(0, 229, 255, 0.06) !important;
+  background: rgba(8, 145, 178, 0.08) !important;
   border-bottom: 1px solid var(--cyber-cyan) !important;
+}
+
+html.dark thead tr {
+  background: rgba(0, 229, 255, 0.06) !important;
 }
 
 th {
@@ -271,90 +315,92 @@ td {
 }
 
 tr:hover td {
+  background: rgba(8, 145, 178, 0.04) !important;
+}
+
+html.dark tr:hover td {
   background: rgba(0, 229, 255, 0.03) !important;
 }
 
-/* ── Callouts (Nextra) ── */
+/* ── Callouts ────────────────────────────────────────────────── */
 .nextra-callout {
   border-radius: 6px !important;
   border-left-width: 3px !important;
   background: var(--bg-card) !important;
 }
 
-/* info = cyan */
 .nextra-callout[data-type='info'],
 .nextra-callout.info {
   border-color: var(--cyber-cyan) !important;
-  box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.03) !important;
 }
 
-/* warning = yellow */
 .nextra-callout[data-type='warning'],
 .nextra-callout.warning {
   border-color: var(--cyber-yellow) !important;
-  box-shadow: inset 0 0 20px rgba(255, 230, 0, 0.03) !important;
 }
 
-/* error = magenta */
 .nextra-callout[data-type='error'],
 .nextra-callout.error {
   border-color: var(--cyber-magenta) !important;
-  box-shadow: inset 0 0 20px rgba(255, 0, 255, 0.03) !important;
 }
 
-/* ── Steps component ── */
-.nextra-steps h3 {
-  font-family: var(--font-mono) !important;
-}
-
-/* ── TOC ── */
+/* ── TOC ─────────────────────────────────────────────────────── */
 .nextra-toc a {
   color: var(--text-muted) !important;
   font-size: 0.8rem !important;
   font-family: var(--font-mono) !important;
 }
+
 .nextra-toc a:hover,
 .nextra-toc a[class*='active'] {
   color: var(--cyber-cyan) !important;
 }
 
-/* ── Search ── */
+/* ── Search ──────────────────────────────────────────────────── */
 .nextra-search input {
   background: var(--bg-card) !important;
   border: 1px solid var(--border-glow) !important;
   color: var(--text-primary) !important;
   font-family: var(--font-mono) !important;
 }
+
 .nextra-search input::placeholder {
   color: var(--text-muted) !important;
 }
+
 .nextra-search input:focus {
+  box-shadow: 0 0 0 2px rgba(8, 145, 178, 0.3) !important;
+}
+
+html.dark .nextra-search input:focus {
   box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.3) !important;
 }
 
-/* ── Footer ── */
+/* ── Footer ──────────────────────────────────────────────────── */
 footer.nextra-footer {
   background: var(--bg-sidebar) !important;
   border-top: 1px solid var(--border-dim) !important;
 }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-base);
-}
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 229, 255, 0.2);
+  background: rgba(8, 145, 178, 0.25);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: rgba(8, 145, 178, 0.5);
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(0, 229, 255, 0.2);
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 229, 255, 0.4);
 }
 
-/* ── Blinking cursor animation ── */
+/* ── Animations ──────────────────────────────────────────────── */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
@@ -365,17 +411,7 @@ footer.nextra-footer {
   color: var(--cyber-cyan);
 }
 
-/* ── Neon glow pulse (optional hero elements) ── */
-@keyframes neon-pulse {
-  0%, 100% { text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 30px rgba(0, 229, 255, 0.2); }
-  50%       { text-shadow: 0 0 20px rgba(0, 229, 255, 0.8), 0 0 50px rgba(0, 229, 255, 0.4); }
-}
-
-.neon-pulse {
-  animation: neon-pulse 3s ease-in-out infinite;
-}
-
-/* ── Badge component ── */
+/* ── Badge ───────────────────────────────────────────────────── */
 .badge {
   display: inline-block;
   padding: 2px 10px;
@@ -388,20 +424,12 @@ footer.nextra-footer {
   border: 1px solid currentColor;
 }
 
-/* ── Dark mode — everything is already dark, ensure Nextra overrides ── */
-.dark body,
-html.dark body {
-  background-color: var(--bg-base) !important;
-  color: var(--text-primary) !important;
-}
-
-.dark .nextra-nav-container,
-html.dark .nextra-nav-container {
-  background: rgba(7, 11, 18, 0.95) !important;
-}
-
-/* ── Selection ── */
+/* ── Selection ───────────────────────────────────────────────── */
 ::selection {
-  background: rgba(0, 229, 255, 0.2);
+  background: rgba(8, 145, 178, 0.2);
   color: var(--cyber-cyan);
+}
+
+html.dark ::selection {
+  background: rgba(0, 229, 255, 0.2);
 }
